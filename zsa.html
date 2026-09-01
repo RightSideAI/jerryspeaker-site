@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The ZSA — The Z Scale Assessment</title>
+<style>
+  :root{
+    --ink:#141b22;
+    --ink-soft:#3f4b57;
+    --muted:#7a8794;
+    --line:#e4ddd2;
+    --paper:#f7f4ef;
+    --card:#ffffff;
+    --accent:#1f6f5c;
+    --i0:#4f7cac;
+    --i1:#d98a2b;
+    --i2:#2f9e6f;
+    --i3:#9a5aa6;
+    --i4:#d95f47;
+    --z1:#7b7f86;
+    --z2:#5f83a8;
+    --z3:#d7a53f;
+    --z4:#df6f38;
+    --z5:#1f9d6a;
+    --shadow:0 10px 40px rgba(20,27,34,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:32px 20px 72px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:38px 34px}
+  .eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.15;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+  h1 .abbr{color:var(--accent)}
+  .sub{color:var(--ink-soft);font-size:17px;margin:10px 0 0}
+  .lede{color:var(--ink-soft);font-size:16px;margin:22px 0 0}
+  .ideal-key{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}
+  .ideal-key span{font-size:12px;font-weight:700;letter-spacing:.01em;padding:5px 11px;border-radius:999px;color:#fff}
+  .byline{margin-top:26px;font-size:13.5px;color:var(--muted)}
+  .byline b{color:var(--ink-soft);font-weight:600}
+  .btn{appearance:none;border:0;cursor:pointer;background:var(--accent);color:#fff;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;transition:transform .05s ease,filter .15s ease;font-family:inherit}
+  .btn:hover{filter:brightness(1.06)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line)}
+  .btn.ghost:hover{filter:none;background:#faf8f4}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:30px}
+  .spacer{flex:1}
+
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .progress-head .q{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .progress-head .pct{font-size:13px;color:var(--muted)}
+  .track{height:7px;background:#eee7db;border-radius:999px;overflow:hidden}
+  .fill{height:100%;background:var(--accent);width:0;border-radius:999px;transition:width .3s ease}
+
+  .dimtag{display:inline-block;margin:26px 0 0;font-size:11.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:#fff;padding:4px 11px;border-radius:999px}
+  .question{font-family:Georgia,serif;font-size:23px;line-height:1.34;margin:12px 0 4px;letter-spacing:-.01em}
+  .qhint{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .12s ease,background .12s ease;background:#fff}
+  .opt:hover{border-color:#cdbfa9;background:#fbf9f5}
+  .opt.sel{border-color:var(--accent);background:#f0f7f4}
+  .opt .num{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--ink-soft)}
+  .opt.sel .num{background:var(--accent);border-color:var(--accent);color:#fff}
+  .opt .lab{font-size:15.5px;color:var(--ink)}
+
+  .badge{display:inline-flex;align-items:center;gap:10px;padding:7px 15px;border-radius:999px;color:#fff;font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+  .level-name{font-family:Georgia,serif;font-size:40px;line-height:1.1;margin:18px 0 2px;letter-spacing:-.01em}
+  .level-tag{font-size:15px;color:var(--muted);margin:0 0 20px}
+  .desc{font-size:17px;color:var(--ink-soft);margin:0 0 8px}
+
+  .meter{display:flex;gap:6px;margin:26px 0 4px}
+  .seg{flex:1;text-align:center}
+  .seg .bar{height:10px;border-radius:6px;background:#e9e2d6;transition:transform .2s}
+  .seg.on .bar{transform:scaleY(1.6)}
+  .seg .cap{font-size:11px;margin-top:9px;color:var(--muted);font-weight:600}
+  .seg.on .cap{color:var(--ink)}
+
+  .ideal-block{margin:34px 0 0}
+  .ideal-block h3,.growth h3{margin:0 0 14px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .ib-row{display:flex;align-items:center;gap:14px;margin:0 0 13px}
+  .ib-row .name{flex:none;width:190px;font-size:14px;font-weight:600;color:var(--ink)}
+  .ib-row .rail{flex:1;height:9px;background:#eee7db;border-radius:999px;overflow:hidden}
+  .ib-row .val{display:block;height:100%;width:0;border-radius:999px;transition:width .5s ease}
+  .ib-row .pct{flex:none;width:42px;text-align:right;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .ib-row.low .name::after{content:" ◂ lowest";color:var(--muted);font-weight:500;font-size:11.5px;letter-spacing:.02em}
+
+  .growth{margin-top:30px;padding:18px 20px;border-radius:14px;background:#f7f4ef;border:1px solid var(--line)}
+  .growth p{margin:0;font-size:16px;color:var(--ink)}
+  .growth .focus{margin-top:12px;font-size:15px;color:var(--ink-soft)}
+  .growth .focus b{color:var(--ink)}
+  .scorenote{font-size:13.5px;color:var(--muted);margin-top:18px}
+  .hide{display:none}
+  @media (max-width:520px){
+    .card{padding:28px 20px}
+    h1{font-size:27px}
+    .question{font-size:20px}
+    .level-name{font-size:32px}
+    .seg .cap{font-size:9px}
+    .ib-row .name{width:132px;font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <!-- INTRO -->
+    <section id="intro">
+      <p class="eyebrow">The Z Scale Assessment Series</p>
+      <h1>The Z Scale Assessment <span class="abbr">(ZSA)</span></h1>
+      <p class="sub">Where does your team sit on the Z Scale — from Zombie to Zealot?</p>
+      <p class="lede">The ZTI is a quick pulse check on one person. The ZSA is the full physical for a team — a deeper, twenty-question read on the conditions that decide whether a team stays half-dead or comes fully alive.</p>
+      <p class="lede">It measures five drivers: Flow, Feedback, and Continuous Learning — Gene Kim's Three Ways — plus Autonomy and Purpose from Daniel Pink's AMP. Four statements under each. Rate your team as it actually operates, from 1 (<b>Never</b>) to 5 (<b>Always</b>).</p>
+      <div class="ideal-key">
+        <span style="background:var(--i0)">Flow</span>
+        <span style="background:var(--i1)">Feedback</span>
+        <span style="background:var(--i2)">Continuous Learning</span>
+        <span style="background:var(--i3)">Autonomy</span>
+        <span style="background:var(--i4)">Purpose</span>
+      </div>
+      <p class="byline">From <b>Raising the Dead: Converting Your Workforce from Zombies to Zealots</b> · by Jerry Peterson</p>
+      <div class="row">
+        <button class="btn" onclick="start()">Begin the assessment →</button>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="hide">
+      <div class="progress-head">
+        <span class="q" id="qcount">Question 1 of 20</span>
+        <span class="pct" id="qpct">0%</span>
+      </div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+
+      <span class="dimtag" id="dimtag"></span>
+      <p class="question" id="qtext"></p>
+      <p class="qhint">Rate how often this is true of your team — 1 is Never, 5 is Always.</p>
+      <div class="options" id="options"></div>
+
+      <div class="row">
+        <button class="btn ghost" id="backBtn" onclick="back()">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn" id="nextBtn" onclick="next()" disabled>Next →</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="result" class="hide">
+      <p class="eyebrow">Your team's result on the Z Scale</p>
+      <span class="badge" id="badge"></span>
+      <h2 class="level-name" id="lvlName"></h2>
+      <p class="level-tag" id="lvlTag"></p>
+      <p class="desc" id="lvlDesc"></p>
+
+      <div class="meter" id="meter"></div>
+
+      <div class="ideal-block">
+        <h3>The five drivers — where the team stands</h3>
+        <div id="idealRows"></div>
+      </div>
+
+      <div class="growth">
+        <h3 style="margin-bottom:6px">Your next move up</h3>
+        <p id="growth"></p>
+        <p class="focus" id="focus"></p>
+      </div>
+
+      <p class="scorenote" id="scorenote"></p>
+
+      <div class="row">
+        <button class="btn ghost" onclick="restart()">↺ Retake</button>
+        <div class="spacer"></div>
+        <button class="btn" onclick="restart()">Done</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+// The five drivers of the Z Scale Assessment (Appendix C):
+// Flow, Feedback, Continuous Learning (Gene Kim's Three Ways) + Autonomy, Purpose (Pink's AMP).
+const ideals = [
+  {key:0, name:"Flow",                 short:"Flow",                 color:"var(--i0)"},
+  {key:1, name:"Feedback",             short:"Feedback",             color:"var(--i1)"},
+  {key:2, name:"Continuous Learning",  short:"Continuous Learning",  color:"var(--i2)"},
+  {key:3, name:"Autonomy",             short:"Autonomy",             color:"var(--i3)"},
+  {key:4, name:"Purpose",              short:"Purpose",              color:"var(--i4)"}
+];
+
+// The exact 20 statements from Appendix C of Raising the Dead, four under each driver.
+const questions = [
+  // Flow
+  {i:0, text:"Work flows through our team without interruption."},
+  {i:0, text:"We rarely have to stop what we are doing to work on something else."},
+  {i:0, text:"We have a clear, visible backlog of work."},
+  {i:0, text:"We are able to get fast feedback on our work."},
+  // Feedback
+  {i:1, text:"We regularly retrospect on our work and make improvements."},
+  {i:1, text:"We feel safe to speak up when we see a problem."},
+  {i:1, text:"We receive regular, constructive feedback on our performance."},
+  {i:1, text:"We have a clear understanding of how our work contributes to the organization's goals."},
+  // Continuous Learning
+  {i:2, text:"We are constantly learning new things."},
+  {i:2, text:"We are given time and resources to invest in our skills."},
+  {i:2, text:"We are encouraged to experiment and take risks."},
+  {i:2, text:"We are not afraid to fail."},
+  // Autonomy
+  {i:3, text:"We have the freedom to make decisions about how we do our work."},
+  {i:3, text:"We are not micromanaged."},
+  {i:3, text:"We are trusted to do our jobs."},
+  {i:3, text:"We have the tools and resources we need to do our work effectively."},
+  // Purpose
+  {i:4, text:"We have a clear sense of purpose."},
+  {i:4, text:"We believe in the work we are doing."},
+  {i:4, text:"We feel like we are part of something bigger than ourselves."},
+  {i:4, text:"We are proud of the work we do."}
+];
+
+const scaleLabels = ["Never","Rarely","Sometimes","Often","Always"];
+
+// Book scoring bands (Appendix C): 80-100 Zealot · 60-79 Zephyr · 40-59 Zoner · below 40 Zombie.
+const levels = {
+  1:{name:"Zombie Team", color:"var(--z1)", tag:"Score below 40 · Survival",
+     desc:"This team is in survival mode. Worn down by the system, it shows up, does the minimum to get through, and waits to be told what to do next. The capacity is there — the environment has buried it.",
+     growth:"Rebuilding starts with one small, real win the team genuinely owns. Restore a heartbeat of autonomy and safety before anything else."},
+  2:{name:"Zoner Team", color:"var(--z2)", tag:"Score 40–59 · Compliance",
+     desc:"A reliable but silent team. It executes plans well, but rarely offers anything of its own. The people have far more to give than the system currently invites out of them.",
+     growth:"The team can do the work — now it needs the safety and the reason to bring itself to the work, not just complete it."},
+  3:{name:"Zephyr Team", color:"var(--z3)", tag:"Score 60–79 · The spark",
+     desc:"The spark is showing. This team is beginning to take ownership and show real initiative. It isn't yet rebuilding broken systems on its own, but something has clearly woken up.",
+     growth:"Give the spark room to act. Protect flow, make improving the work a standing part of the week, and widen the feedback loops."},
+  4:{name:"Zealot Team", color:"var(--z4)", tag:"Score 80–100 · Ownership",
+     desc:"A team that sees where systems fail and is obsessed with making them better. It owns its outcomes and insists on doing the work well. This is what a genuinely healthy team looks like.",
+     growth:"The horizon beyond this is a Zealot Leader team — one whose greatest output is the autonomy, mastery, and purpose it multiplies in the teams and people around it. Protect what you've built, and start exporting it."}
+};
+
+// Ladder shows all five Z Scale rungs; this team-level assessment scores up to Zealot (rung 4),
+// with Zealot Leader (rung 5) as the horizon it points toward.
+const ladder=[1,2,3,4,5];
+let answers=new Array(questions.length).fill(0);
+let idx=0;
+
+function start(){ idx=0; answers.fill(0); show('quiz'); render(); }
+function restart(){ show('intro'); }
+function show(id){
+  ['intro','quiz','result'].forEach(s=>document.getElementById(s).classList.add('hide'));
+  document.getElementById(id).classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function render(){
+  const Q=questions[idx];
+  document.getElementById('qcount').textContent=`Question ${idx+1} of ${questions.length}`;
+  const pct=Math.round((idx)/questions.length*100);
+  document.getElementById('qpct').textContent=pct+"%";
+  document.getElementById('fill').style.width=pct+"%";
+  const dt=document.getElementById('dimtag');
+  dt.textContent=ideals[Q.i].name;
+  dt.style.background=ideals[Q.i].color;
+  document.getElementById('qtext').textContent=Q.text;
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  for(let v=1;v<=5;v++){
+    const el=document.createElement('div');
+    el.className='opt'+(answers[idx]===v?' sel':'');
+    el.onclick=()=>choose(v);
+    el.innerHTML=`<span class="num">${v}</span><span class="lab">${scaleLabels[v-1]}</span>`;
+    box.appendChild(el);
+  }
+  document.getElementById('backBtn').style.visibility=idx===0?'hidden':'visible';
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=idx===questions.length-1?'Reveal our Z Scale level →':'Next →';
+  nb.disabled=answers[idx]===0;
+}
+function choose(v){ answers[idx]=v; render(); }
+function back(){ if(idx>0){ idx--; render(); } }
+function next(){
+  if(answers[idx]===0) return;
+  if(idx<questions.length-1){ idx++; render(); } else finish();
+}
+
+// Raw score 20–100 → four bands per Appendix C.
+function bandFor(raw){
+  if(raw<40) return 1;
+  if(raw<=59) return 2;
+  if(raw<=79) return 3;
+  return 4;
+}
+function idealPct(k){
+  let sum=0,count=0;
+  questions.forEach((q,i)=>{ if(q.i===k){ sum+=answers[i]; count++; } });
+  return {pct:Math.round((sum/(count*5))*100), sum, count};
+}
+
+function finish(){
+  const raw=answers.reduce((a,b)=>a+b,0);
+  const lv=bandFor(raw);
+  const L=levels[lv];
+  document.getElementById('fill').style.width='100%';
+
+  const badge=document.getElementById('badge');
+  badge.textContent=`Z Scale · ${L.name.replace(' Team','')}`;
+  badge.style.background=L.color;
+  document.getElementById('lvlName').textContent=L.name;
+  document.getElementById('lvlName').style.color=L.color;
+  document.getElementById('lvlTag').textContent=L.tag;
+  document.getElementById('lvlDesc').textContent=L.desc;
+
+  const meter=document.getElementById('meter');
+  meter.innerHTML='';
+  const names={1:'Zombie',2:'Zoner',3:'Zephyr',4:'Zealot',5:'Leader'};
+  const ladderColors={1:'var(--z1)',2:'var(--z2)',3:'var(--z3)',4:'var(--z4)',5:'var(--z5)'};
+  ladder.forEach(n=>{
+    const seg=document.createElement('div');
+    seg.className='seg'+(n===lv?' on':'');
+    const barColor=n<=lv?ladderColors[n]:'#e9e2d6';
+    seg.innerHTML=`<div class="bar" style="background:${barColor}"></div><div class="cap">${names[n]}</div>`;
+    meter.appendChild(seg);
+  });
+
+  // Five-driver breakdown; find lowest
+  const scores=ideals.map(id=>({...id, ...idealPct(id.key)}));
+  let lowest=scores[0];
+  scores.forEach(s=>{ if(s.pct<lowest.pct) lowest=s; });
+  const rows=document.getElementById('idealRows');
+  rows.innerHTML='';
+  scores.forEach(s=>{
+    const div=document.createElement('div');
+    div.className='ib-row'+(s.key===lowest.key?' low':'');
+    div.innerHTML=`<span class="name">${s.short}</span>`
+      +`<span class="rail"><span class="val" style="width:${s.pct}%;background:${s.color}"></span></span>`
+      +`<span class="pct">${s.pct}%</span>`;
+    rows.appendChild(div);
+  });
+
+  document.getElementById('growth').textContent=L.growth;
+  document.getElementById('focus').innerHTML=
+    `Start where the leverage is: your lowest driver right now is <b>${lowest.name}</b> (${lowest.pct}%). Move that one and the whole team moves.`;
+  document.getElementById('scorenote').textContent=
+    `Team score: ${raw} of 100, across 20 questions and five drivers — Flow, Feedback, Continuous Learning, Autonomy, and Purpose. Bands: below 40 Zombie · 40–59 Zoner · 60–79 Zephyr · 80–100 Zealot.`;
+
+  show('result');
+}
+</script>
+</body>
+</html>

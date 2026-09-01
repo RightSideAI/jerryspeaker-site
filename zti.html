@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Zealot Transformation Index</title>
+<style>
+  :root{
+    --ink:#141b22;
+    --ink-soft:#3f4b57;
+    --muted:#7a8794;
+    --line:#e4ddd2;
+    --paper:#f7f4ef;
+    --card:#ffffff;
+    --accent:#1f6f5c;
+    --amp-a:#5f83a8;
+    --amp-m:#df6f38;
+    --amp-p:#1f9d6a;
+    --z1:#7b7f86;
+    --z2:#5f83a8;
+    --z3:#d7a53f;
+    --z4:#df6f38;
+    --z5:#1f9d6a;
+    --shadow:0 10px 40px rgba(20,27,34,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:32px 20px 72px}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:38px 34px;
+  }
+  .eyebrow{
+    font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;margin:0 0 14px;
+  }
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:34px;line-height:1.15;margin:0 0 6px;font-weight:700;letter-spacing:-.01em;
+  }
+  h1 .abbr{color:var(--accent)}
+  .sub{color:var(--ink-soft);font-size:17px;margin:10px 0 0}
+  .lede{color:var(--ink-soft);font-size:16px;margin:22px 0 0}
+  .amp-key{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}
+  .amp-key span{
+    font-size:12.5px;font-weight:700;letter-spacing:.02em;
+    padding:5px 12px;border-radius:999px;color:#fff;
+  }
+  .byline{margin-top:26px;font-size:13.5px;color:var(--muted)}
+  .byline b{color:var(--ink-soft);font-weight:600}
+  .btn{
+    appearance:none;border:0;cursor:pointer;
+    background:var(--accent);color:#fff;
+    font-size:16px;font-weight:600;
+    padding:14px 26px;border-radius:12px;
+    transition:transform .05s ease, filter .15s ease;
+    font-family:inherit;
+  }
+  .btn:hover{filter:brightness(1.06)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line)}
+  .btn.ghost:hover{filter:none;background:#faf8f4}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:30px}
+  .spacer{flex:1}
+
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .progress-head .q{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .progress-head .pct{font-size:13px;color:var(--muted)}
+  .track{height:7px;background:#eee7db;border-radius:999px;overflow:hidden}
+  .fill{height:100%;background:var(--accent);width:0;border-radius:999px;transition:width .3s ease}
+
+  .dimtag{
+    display:inline-block;margin:26px 0 0;font-size:11.5px;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:#fff;
+    padding:4px 11px;border-radius:999px;
+  }
+  .question{
+    font-family:Georgia,serif;font-size:24px;line-height:1.32;
+    margin:12px 0 4px;letter-spacing:-.01em;
+  }
+  .qhint{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{
+    display:flex;align-items:center;gap:14px;
+    border:1.5px solid var(--line);border-radius:12px;
+    padding:14px 16px;cursor:pointer;
+    transition:border-color .12s ease, background .12s ease;
+    background:#fff;
+  }
+  .opt:hover{border-color:#cdbfa9;background:#fbf9f5}
+  .opt.sel{border-color:var(--accent);background:#f0f7f4}
+  .opt .num{
+    flex:none;width:30px;height:30px;border-radius:50%;
+    border:1.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;color:var(--ink-soft);
+  }
+  .opt.sel .num{background:var(--accent);border-color:var(--accent);color:#fff}
+  .opt .lab{font-size:15.5px;color:var(--ink)}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:7px 15px;border-radius:999px;color:#fff;font-weight:700;
+    font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  }
+  .level-name{
+    font-family:Georgia,serif;font-size:40px;line-height:1.1;margin:18px 0 2px;letter-spacing:-.01em;
+  }
+  .level-tag{font-size:15px;color:var(--muted);margin:0 0 20px}
+  .desc{font-size:17px;color:var(--ink-soft);margin:0 0 8px}
+
+  .meter{display:flex;gap:6px;margin:26px 0 4px}
+  .seg{flex:1;text-align:center}
+  .seg .bar{height:10px;border-radius:6px;background:#e9e2d6;transition:transform .2s}
+  .seg.on .bar{transform:scaleY(1.6)}
+  .seg .cap{font-size:11px;margin-top:9px;color:var(--muted);font-weight:600}
+  .seg.on .cap{color:var(--ink)}
+
+  .amp-block{margin:34px 0 0}
+  .amp-block h3, .growth h3{margin:0 0 14px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .amp-row{display:flex;align-items:center;gap:14px;margin:0 0 12px}
+  .amp-row .name{flex:none;width:82px;font-size:14px;font-weight:600;color:var(--ink)}
+  .amp-row .rail{flex:1;height:9px;background:#eee7db;border-radius:999px;overflow:hidden}
+  .amp-row .val{display:block;height:100%;width:0;border-radius:999px;transition:width .5s ease}
+  .amp-row .pct{flex:none;width:42px;text-align:right;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+  .growth{
+    margin-top:30px;padding:18px 20px;border-radius:14px;
+    background:#f7f4ef;border:1px solid var(--line);
+  }
+  .growth p{margin:0;font-size:16px;color:var(--ink)}
+  .scorenote{font-size:13.5px;color:var(--muted);margin-top:18px}
+  .hide{display:none}
+  @media (max-width:520px){
+    .card{padding:28px 20px}
+    h1{font-size:28px}
+    .question{font-size:21px}
+    .level-name{font-size:32px}
+    .seg .cap{font-size:9.5px}
+    .amp-row .name{width:74px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <!-- INTRO -->
+    <section id="intro">
+      <p class="eyebrow">The Z Scale Assessment Series</p>
+      <h1>The Zealot Transformation Index <span class="abbr">(ZTI)</span></h1>
+      <p class="sub">Where do you fall on the Z Scale — from Zombie to Zealot Leader?</p>
+      <p class="lede">Every person shows up to their work somewhere on a spectrum. At one end is the Zombie, beaten down by the system and running on the bare minimum. At the other is the Zealot Leader, whose greatest contribution is no longer what they build, but the Zealots they create in others.</p>
+      <p class="lede">The ten questions are built on Daniel Pink's model of what truly drives us — <b>Autonomy, Mastery, and Purpose</b>. Where you land on the Z Scale is a reflection of how alive those three drives are in your work right now.</p>
+      <div class="amp-key">
+        <span style="background:var(--amp-a)">Autonomy</span>
+        <span style="background:var(--amp-m)">Mastery</span>
+        <span style="background:var(--amp-p)">Purpose</span>
+      </div>
+      <p class="byline">From <b>Raising the Dead: Converting Your Workforce from Zombies to Zealots</b> · by Jerry Peterson</p>
+      <div class="row">
+        <button class="btn" onclick="start()">Begin the assessment →</button>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="hide">
+      <div class="progress-head">
+        <span class="q" id="qcount">Question 1 of 10</span>
+        <span class="pct" id="qpct">0%</span>
+      </div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+
+      <span class="dimtag" id="dimtag"></span>
+      <p class="question" id="qtext"></p>
+      <p class="qhint">Rate how true this is of you right now.</p>
+      <div class="options" id="options"></div>
+
+      <div class="row">
+        <button class="btn ghost" id="backBtn" onclick="back()">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn" id="nextBtn" onclick="next()" disabled>Next →</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="result" class="hide">
+      <p class="eyebrow">Your result on the Z Scale</p>
+      <span class="badge" id="badge"></span>
+      <h2 class="level-name" id="lvlName"></h2>
+      <p class="level-tag" id="lvlTag"></p>
+      <p class="desc" id="lvlDesc"></p>
+
+      <div class="meter" id="meter"></div>
+
+      <div class="amp-block">
+        <h3>What's driving your score</h3>
+        <div class="amp-row">
+          <span class="name">Autonomy</span>
+          <span class="rail"><span class="val" id="valA" style="background:var(--amp-a)"></span></span>
+          <span class="pct" id="pctA"></span>
+        </div>
+        <div class="amp-row">
+          <span class="name">Mastery</span>
+          <span class="rail"><span class="val" id="valM" style="background:var(--amp-m)"></span></span>
+          <span class="pct" id="pctM"></span>
+        </div>
+        <div class="amp-row">
+          <span class="name">Purpose</span>
+          <span class="rail"><span class="val" id="valP" style="background:var(--amp-p)"></span></span>
+          <span class="pct" id="pctP"></span>
+        </div>
+      </div>
+
+      <div class="growth">
+        <h3 style="margin-bottom:6px">Your next move up</h3>
+        <p id="growth"></p>
+      </div>
+
+      <p class="scorenote" id="scorenote"></p>
+
+      <div class="row">
+        <button class="btn ghost" onclick="restart()">↺ Retake</button>
+        <div class="spacer"></div>
+        <button class="btn" onclick="restart()">Done</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+// Ten questions grounded in Daniel Pink's AMP framework (Autonomy / Mastery / Purpose)
+const questions = [
+  {dim:"A", text:"I decide how my work gets done, rather than just following instructions handed to me."},
+  {dim:"A", text:"I take action on problems I notice, without waiting for permission or direction."},
+  {dim:"A", text:"I feel genuine ownership over the outcomes of my work — not just the tasks assigned to me."},
+  {dim:"M", text:"I am actively getting better at what I do, and I care deeply about the quality of my craft."},
+  {dim:"M", text:"When a system around me is failing, I work to improve or redesign it rather than just live with it."},
+  {dim:"M", text:"I push for a better or more creative approach even when the current way still 'works.'"},
+  {dim:"P", text:"I feel connected to a purpose in my work that is bigger than the paycheck."},
+  {dim:"P", text:"What I do feels genuinely meaningful to me and worth the effort I put in."},
+  {dim:"P", text:"I invest real energy in helping the people around me grow and take ownership."},
+  {dim:"P", text:"I believe my greatest contribution is developing other people, not just my own output."}
+];
+
+const dimName = {A:"Autonomy", M:"Mastery", P:"Purpose"};
+const dimColor = {A:"var(--amp-a)", M:"var(--amp-m)", P:"var(--amp-p)"};
+
+const scaleLabels = [
+  "Strongly disagree",
+  "Disagree",
+  "Neither agree nor disagree",
+  "Agree",
+  "Strongly agree"
+];
+
+const levels = {
+  1:{name:"Zombie", color:"var(--z1)", tag:"Level 1 of 5 · Survival",
+     desc:"You're in pure survival mode. The system has worn you down to the point where you show up, do the minimum it takes to get through, and wait for someone to tell you what's next. This isn't who you are — it's what the environment has done to you.",
+     growth:"Start with autonomy. Reclaim one small thing you can genuinely own this week — a single task where you decide how it gets done. Ownership, even in a tiny corner, is the first heartbeat back."},
+  2:{name:"Zoner", color:"var(--z2)", tag:"Level 2 of 5 · Compliance",
+     desc:"You're reliable. You can follow a plan and execute it well — but the system has taught you to keep yourself out of the work. You rarely offer your own ideas, not because you don't have them, but because it hasn't felt safe or worth it to.",
+     growth:"Offer one idea of your own this week — unprompted, to someone who'll hear it. The gap between Zoner and Zephyr is the willingness to put a piece of yourself on the table."},
+  3:{name:"Zephyr", color:"var(--z3)", tag:"Level 3 of 5 · The spark",
+     desc:"The spark is lit. You're showing real signs of inspiration and ownership. You're not yet ready to tear into broken systems and rebuild them — but something in you has woken up, and it's starting to look for more.",
+     growth:"Lean into mastery. Pick one system that frustrates you and make a single improvement to it — no waiting for permission. Moving from Zephyr to Zealot is the shift from feeling the spark to acting on it."},
+  4:{name:"Zealot", color:"var(--z4)", tag:"Level 4 of 5 · Ownership",
+     desc:"You see where systems fail and you're obsessed with making them better. You take ownership as a matter of instinct and you insist on being creative. You are the kind of person a team is lucky to have — the engine of real improvement.",
+     growth:"Your next leap is purpose beyond yourself. Stop measuring your value by what you produce and pick one person to deliberately develop. The rarest level ahead is measured not by what you build, but by who you raise."},
+  5:{name:"Zealot Leader", color:"var(--z5)", tag:"Level 5 of 5 · Rare air",
+     desc:"This is rare ground. You're a Zealot who has learned the hardest lesson of all: your biggest contribution is no longer what you can do, but the Zealots you create in others. Your autonomy, mastery, and purpose now multiply through everyone around you.",
+     growth:"Guard against the pull back into doing it all yourself. Your leverage is other people. Keep asking: who am I raising, and how will they outgrow me? That question is the whole job."}
+};
+
+const order = [1,2,3,4,5];
+let answers = new Array(questions.length).fill(0);
+let idx = 0;
+
+function start(){ idx=0; answers.fill(0); show('quiz'); render(); }
+function restart(){ show('intro'); }
+
+function show(id){
+  ['intro','quiz','result'].forEach(s=>document.getElementById(s).classList.add('hide'));
+  document.getElementById(id).classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function render(){
+  const Q = questions[idx];
+  document.getElementById('qcount').textContent = `Question ${idx+1} of ${questions.length}`;
+  const pct = Math.round((idx)/questions.length*100);
+  document.getElementById('qpct').textContent = pct+"%";
+  document.getElementById('fill').style.width = pct+"%";
+
+  const dt = document.getElementById('dimtag');
+  dt.textContent = dimName[Q.dim];
+  dt.style.background = dimColor[Q.dim];
+
+  document.getElementById('qtext').textContent = Q.text;
+
+  const box = document.getElementById('options');
+  box.innerHTML = '';
+  for(let v=1; v<=5; v++){
+    const el = document.createElement('div');
+    el.className = 'opt' + (answers[idx]===v ? ' sel':'');
+    el.onclick = ()=>choose(v);
+    el.innerHTML = `<span class="num">${v}</span><span class="lab">${scaleLabels[v-1]}</span>`;
+    box.appendChild(el);
+  }
+  document.getElementById('backBtn').style.visibility = idx===0 ? 'hidden':'visible';
+  const nb = document.getElementById('nextBtn');
+  nb.textContent = idx===questions.length-1 ? 'Reveal my Z Scale level →' : 'Next →';
+  nb.disabled = answers[idx]===0;
+}
+
+function choose(v){ answers[idx]=v; render(); }
+function back(){ if(idx>0){ idx--; render(); } }
+function next(){
+  if(answers[idx]===0) return;
+  if(idx < questions.length-1){ idx++; render(); }
+  else finish();
+}
+
+function bandFor(raw){
+  if(raw<=17) return 1;
+  if(raw<=25) return 2;
+  if(raw<=33) return 3;
+  if(raw<=41) return 4;
+  return 5;
+}
+
+function dimPct(dim){
+  let sum=0,count=0;
+  questions.forEach((q,i)=>{ if(q.dim===dim){ sum+=answers[i]; count++; } });
+  return Math.round((sum/(count*5))*100);
+}
+
+function finish(){
+  const raw = answers.reduce((a,b)=>a+b,0);
+  const lv = bandFor(raw);
+  const L = levels[lv];
+  document.getElementById('fill').style.width='100%';
+
+  const badge = document.getElementById('badge');
+  badge.textContent = `Z Scale · Level ${lv}`;
+  badge.style.background = L.color;
+
+  document.getElementById('lvlName').textContent = L.name;
+  document.getElementById('lvlName').style.color = L.color;
+  document.getElementById('lvlTag').textContent = L.tag;
+  document.getElementById('lvlDesc').textContent = L.desc;
+  document.getElementById('growth').textContent = L.growth;
+  document.getElementById('scorenote').textContent =
+    `Raw score: ${raw} of 50. The ZTI maps your ten AMP responses onto the five levels of the Z Scale.`;
+
+  const meter = document.getElementById('meter');
+  meter.innerHTML='';
+  const names = {1:'Zombie',2:'Zoner',3:'Zephyr',4:'Zealot',5:'Leader'};
+  order.forEach(n=>{
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (n===lv?' on':'');
+    const barColor = n<=lv ? levels[n].color : '#e9e2d6';
+    seg.innerHTML = `<div class="bar" style="background:${barColor}"></div><div class="cap">${names[n]}</div>`;
+    meter.appendChild(seg);
+  });
+
+  const a=dimPct('A'), m=dimPct('M'), p=dimPct('P');
+  document.getElementById('valA').style.width=a+'%'; document.getElementById('pctA').textContent=a+'%';
+  document.getElementById('valM').style.width=m+'%'; document.getElementById('pctM').textContent=m+'%';
+  document.getElementById('valP').style.width=p+'%'; document.getElementById('pctP').textContent=p+'%';
+
+  show('result');
+}
+</script>
+</body>
+</html>

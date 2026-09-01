@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The LDI — Leadership Depth Index</title>
+<style>
+  :root{
+    --ink:#141b22;--ink-soft:#3f4b57;--muted:#7a8794;--line:#e4ddd2;
+    --paper:#f7f4ef;--card:#ffffff;--accent:#1f6f5c;
+    --good:#1f9d6a;--ok:#d7a53f;--warn:#df6f38;--bad:#c0392b;
+    --shadow:0 10px 40px rgba(20,27,34,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:32px 20px 72px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:38px 34px}
+  .eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.15;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+  h1 .abbr{color:var(--accent)}
+  .sub{color:var(--ink-soft);font-size:17px;margin:10px 0 0}
+  .lede{color:var(--ink-soft);font-size:16px;margin:18px 0 0}
+  .byline{margin-top:24px;font-size:13.5px;color:var(--muted)}
+  .byline b{color:var(--ink-soft);font-weight:600}
+  .btn{appearance:none;border:0;cursor:pointer;background:var(--accent);color:#fff;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;transition:filter .15s;font-family:inherit}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line)}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:28px}
+  .spacer{flex:1}
+  .hide{display:none}
+
+  fieldset{border:1px solid var(--line);border-radius:14px;padding:20px 20px 8px;margin:22px 0 0}
+  legend{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 8px}
+  .fhint{font-size:13.5px;color:var(--muted);margin:-2px 0 14px}
+  .field{display:flex;align-items:center;gap:14px;margin:0 0 14px;flex-wrap:wrap}
+  .field label{flex:1;min-width:220px;font-size:15px;color:var(--ink)}
+  .field input{width:110px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:16px;font-family:inherit;text-align:center}
+  .field input:focus{outline:none;border-color:var(--accent)}
+  .err{color:var(--bad);font-size:13.5px;margin-top:8px;min-height:1px}
+
+  .scorebig{font-family:Georgia,serif;font-size:64px;line-height:1;margin:6px 0 0}
+  .badge{display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;color:#fff;font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin-top:8px}
+  .verdict{font-size:16.5px;color:var(--ink-soft);margin:18px 0 0}
+
+  .comp{margin:26px 0 0}
+  .comp h3{margin:0 0 14px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .crow{display:flex;align-items:center;gap:14px;margin:0 0 14px}
+  .crow .cn{flex:none;width:190px;font-size:14px;font-weight:600;color:var(--ink)}
+  .crow .cn small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+  .crow .rail{flex:1;height:12px;background:#eee7db;border-radius:999px;overflow:hidden}
+  .crow .val{display:block;height:100%;width:0;border-radius:999px;transition:width .5s ease}
+  .crow .cs{flex:none;width:38px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+
+  .flags{margin:26px 0 0;border-radius:14px;padding:18px 20px;border:1px solid var(--line)}
+  .flags.clean{background:#eef7f2;border-color:#bfe2d3}
+  .flags.alert{background:#fdeeea;border-color:#f3c9bd}
+  .flags h3{margin:0 0 10px;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+  .flags.clean h3{color:var(--good)} .flags.alert h3{color:var(--bad)}
+  .flags ul{margin:0;padding-left:20px}
+  .flags li{font-size:15px;margin:0 0 8px;color:var(--ink)}
+  .flags li b{color:var(--bad)}
+
+  .ladder{display:flex;gap:6px;margin:24px 0 0}
+  .lseg{flex:1;text-align:center}
+  .lseg .bar{height:9px;border-radius:6px;background:#e9e2d6}
+  .lseg.on .bar{transform:scaleY(1.7)}
+  .lseg .cap{font-size:10.5px;margin-top:8px;color:var(--muted);font-weight:600}
+  .lseg.on .cap{color:var(--ink)}
+  @media(max-width:520px){.card{padding:28px 20px}h1{font-size:27px}.scorebig{font-size:52px}.crow .cn{width:150px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <section id="intro">
+      <p class="eyebrow">The Z Scale Assessment Series</p>
+      <h1>The Leadership Depth Index <span class="abbr">(LDI)</span></h1>
+      <p class="sub">The one leadership metric that measures what actually matters: do your leaders create other leaders?</p>
+      <p class="lede">Most metrics judge a leader by their team's output. The LDI judges them by their ability to build a <b>Zealot environment</b> — one that grows more leaders. And to keep it from being gamed, it looks <b>two levels down</b>: not just whether your leader develops their direct reports, but whether that effect cascades to the people those reports lead. You can fake a good immediate team. You cannot fake depth.</p>
+      <p class="lede">Enter the numbers below and the LDI will score three things — how many leaders this person creates, and whether the teams beneath them are rising or slipping — then flag anything serious.</p>
+      <p class="byline">From <b>Raising the Dead: Converting Your Workforce from Zombies to Zealots</b> · by Jerry Peterson</p>
+
+      <fieldset>
+        <legend>Promotion Velocity</legend>
+        <p class="fhint">Are they growing leaders, or just managing followers? (Past 24 months.)</p>
+        <div class="field"><label>Total direct reports</label><input id="total" type="number" min="1" step="1" placeholder="e.g. 10"></div>
+        <div class="field"><label>How many promoted into leadership roles</label><input id="promoted" type="number" min="0" step="1" placeholder="e.g. 3"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Team Trajectory</legend>
+        <p class="fhint">Average Z Scale (1–5) of the teams run by their direct reports — now vs. 12 months ago.</p>
+        <div class="field"><label>Team average Z Scale — 12 months ago</label><input id="teamPrev" type="number" min="1" max="5" step="0.1" placeholder="e.g. 3.0"></div>
+        <div class="field"><label>Team average Z Scale — now</label><input id="teamNow" type="number" min="1" max="5" step="0.1" placeholder="e.g. 3.4"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Second-Level Trajectory <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— the anti-gaming layer</span></legend>
+        <p class="fhint">Average Z Scale (1–5) of employees <b>two levels down</b> — now vs. 12 months ago.</p>
+        <div class="field"><label>Second-level average Z Scale — 12 months ago</label><input id="secPrev" type="number" min="1" max="5" step="0.1" placeholder="e.g. 2.7"></div>
+        <div class="field"><label>Second-level average Z Scale — now</label><input id="secNow" type="number" min="1" max="5" step="0.1" placeholder="e.g. 3.0"></div>
+      </fieldset>
+
+      <div class="err" id="err"></div>
+      <div class="row">
+        <button class="btn" onclick="calc()">Calculate the LDI →</button>
+      </div>
+    </section>
+
+    <section id="result" class="hide">
+      <p class="eyebrow">Leadership Depth Index</p>
+      <div class="scorebig" id="ldiNum"></div>
+      <span class="badge" id="badge"></span>
+      <p class="verdict" id="verdict"></p>
+
+      <div class="ladder" id="ladder"></div>
+
+      <div class="comp">
+        <h3>The three components</h3>
+        <div id="crows"></div>
+      </div>
+
+      <div class="flags" id="flags"></div>
+
+      <div class="row">
+        <button class="btn ghost" onclick="back()">← Recalculate</button>
+        <div class="spacer"></div>
+        <button class="btn" onclick="back()">Done</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const BENCH=0.40;           // promotion rate that earns a perfect 5
+const UP=2, DOWN=4;         // momentum weights: improvement x2, decline x4
+const clamp=(x)=>Math.max(0,Math.min(5,x));
+
+function num(id){ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+function pv(promoted,total){ return Math.min(5,(promoted/total)/BENCH*5); }
+function traj(now,prev){ const ch=now-prev; return clamp(now + (ch>=0?UP*ch:DOWN*ch)); }
+
+function band(x){
+  if(x>=4.0) return {name:"Zealot Multiplier", color:"var(--good)"};
+  if(x>=3.0) return {name:"Developing Leader", color:"var(--ok)"};
+  if(x>=2.0) return {name:"Zombie Leader",     color:"var(--warn)"};
+  return {name:"Zombie Factory", color:"var(--bad)"};
+}
+
+function calc(){
+  const total=num('total'), promoted=num('promoted');
+  const teamPrev=num('teamPrev'), teamNow=num('teamNow');
+  const secPrev=num('secPrev'), secNow=num('secNow');
+  const e=document.getElementById('err');
+  const vals=[total,promoted,teamPrev,teamNow,secPrev,secNow];
+  if(vals.some(v=>v===null)){ e.textContent="Please fill in all six fields."; return; }
+  if(total<1){ e.textContent="Direct reports must be at least 1."; return; }
+  if(promoted>total){ e.textContent="Promotions can't exceed total direct reports."; return; }
+  for(const [v,n] of [[teamPrev,'team'],[teamNow,'team'],[secPrev,'second-level'],[secNow,'second-level']]){
+    if(v<1||v>5){ e.textContent="Z Scale values must be between 1 and 5."; return; }
+  }
+  e.textContent="";
+
+  const PV=pv(promoted,total);
+  const T=traj(teamNow,teamPrev), S=traj(secNow,secPrev);
+  const teamCh=teamNow-teamPrev, secCh=secNow-secPrev;
+  const LDI=(PV+T+S)/3;
+  const B=band(LDI);
+
+  document.getElementById('ldiNum').textContent=LDI.toFixed(1);
+  document.getElementById('ldiNum').style.color=B.color;
+  const bd=document.getElementById('badge'); bd.textContent=B.name; bd.style.background=B.color;
+
+  // component bars
+  const rows=[
+    {n:"Promotion Velocity", sub:`${promoted} of ${total} promoted`, s:PV, c:"var(--accent)"},
+    {n:"Team Trajectory", sub:`${teamPrev.toFixed(1)} → ${teamNow.toFixed(1)} (${teamCh>=0?'+':''}${teamCh.toFixed(1)})`, s:T, c: teamCh<0?"var(--bad)":"var(--good)"},
+    {n:"Second-Level Trajectory", sub:`${secPrev.toFixed(1)} → ${secNow.toFixed(1)} (${secCh>=0?'+':''}${secCh.toFixed(1)})`, s:S, c: secCh<0?"var(--bad)":"var(--good)"}
+  ];
+  const cr=document.getElementById('crows'); cr.innerHTML='';
+  rows.forEach(r=>{
+    const d=document.createElement('div'); d.className='crow';
+    d.innerHTML=`<span class="cn">${r.n}<small>${r.sub}</small></span>`
+      +`<span class="rail"><span class="val" style="width:${r.s/5*100}%;background:${r.c}"></span></span>`
+      +`<span class="cs" style="color:${r.c}">${r.s.toFixed(1)}</span>`;
+    cr.appendChild(d);
+  });
+
+  // ladder
+  const segs=[{c:"var(--bad)",l:"Zombie Factory",lo:0,hi:2},{c:"var(--warn)",l:"Zombie Leader",lo:2,hi:3},
+              {c:"var(--ok)",l:"Developing",lo:3,hi:4},{c:"var(--good)",l:"Multiplier",lo:4,hi:5.01}];
+  const lad=document.getElementById('ladder'); lad.innerHTML='';
+  segs.forEach(sg=>{
+    const on = LDI>=sg.lo && LDI<sg.hi;
+    const el=document.createElement('div'); el.className='lseg'+(on?' on':'');
+    el.innerHTML=`<div class="bar" style="background:${on?sg.c:'#e9e2d6'}"></div><div class="cap">${sg.l}</div>`;
+    lad.appendChild(el);
+  });
+
+  // verdict
+  let vt="";
+  if(LDI>=4.0) vt="This is a leader who multiplies. They create leaders and lift the teams beneath them — the rarest and most valuable kind. Protect them, learn from them, and give them more people to grow.";
+  else if(LDI>=3.0) vt="A leader on the right trajectory, building real depth — but with room to grow. Find the weakest of the three numbers below and coach to it.";
+  else if(LDI>=2.0) vt="Leadership depth is weak. The teams beneath this person are stagnant or slipping, and few new leaders are emerging. This needs targeted intervention before it erodes further.";
+  else vt="A serious problem. This leader is not creating leaders, and the people beneath them are being actively eroded. Urgent development — or a change — is required.";
+  document.getElementById('verdict').textContent=vt;
+
+  // flags — highlight serious problems
+  const problems=[];
+  if(teamCh<0) problems.push(`Their teams are moving <b>the wrong direction</b> (${teamPrev.toFixed(1)} → ${teamNow.toFixed(1)}). A leader whose people are regressing is the clearest danger signal there is.`);
+  if(secCh<0) problems.push(`Depth is eroding <b>two levels down</b> (${secPrev.toFixed(1)} → ${secNow.toFixed(1)}) — the hardest layer to fake, and it's slipping.`);
+  if(promoted===0) problems.push(`<b>Zero</b> reports promoted into leadership in two years. This is the Hero pattern — indispensable, but creating no one.`);
+  else if(PV<2) problems.push(`Promotion Velocity is low (${PV.toFixed(1)}/5). Few of their people are becoming leaders.`);
+  if(secCh>=0 && teamCh>=0 && (secNow < teamNow-0.5)) problems.push(`Watch for gaming: the immediate team looks healthier than the layer below it. Real depth should cascade.`);
+
+  const fl=document.getElementById('flags');
+  if(problems.length && LDI<3.0){
+    fl.className='flags alert';
+    fl.innerHTML=`<h3>⚠ Serious problems to address</h3><ul>${problems.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+  } else if(problems.length){
+    fl.className='flags alert';
+    fl.innerHTML=`<h3>⚠ Watch these</h3><ul>${problems.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+  } else {
+    fl.className='flags clean';
+    fl.innerHTML=`<h3>✓ No red flags</h3><ul><li>Leaders are being created and the teams beneath this person — at both levels — are holding or rising. This is what building a Zealot environment looks like.</li></ul>`;
+  }
+
+  document.getElementById('intro').classList.add('hide');
+  document.getElementById('result').classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function back(){ document.getElementById('result').classList.add('hide'); document.getElementById('intro').classList.remove('hide'); window.scrollTo({top:0,behavior:'smooth'}); }
+</script>
+</body>
+</html>

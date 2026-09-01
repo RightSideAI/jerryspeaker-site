@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jerry Peterson — Raising the Dead</title>
+<style>
+  :root{
+    --ink:#141b22;--ink-soft:#3f4b57;--muted:#7a8794;--line:#e4ddd2;
+    --paper:#f7f4ef;--card:#ffffff;--accent:#1f6f5c;--accent-d:#12241d;
+    --z1:#7b7f86;--z2:#5f83a8;--z3:#d7a53f;--z4:#df6f38;--z5:#1f9d6a;
+    --shadow:0 10px 40px rgba(20,27,34,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.01em}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:20;background:rgba(247,244,239,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  nav .in{max-width:1000px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:22px}
+  nav .brand{font-family:Georgia,serif;font-weight:700;font-size:18px}
+  nav .links{margin-left:auto;display:flex;gap:22px;align-items:center}
+  nav .links a{font-size:14.5px;color:var(--ink-soft);text-decoration:none;font-weight:500}
+  nav .links a:hover{color:var(--accent)}
+  nav .links a.cta{color:var(--accent);font-weight:700}
+  @media(max-width:680px){nav .links a:not(.cta){display:none}}
+
+  /* hero */
+  .hero{padding:76px 0 64px}
+  .eyebrow{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 20px}
+  .hero h1{font-size:52px;line-height:1.08;margin:0;max-width:15ch;font-weight:700}
+  .hero .lead{font-size:19px;color:var(--ink-soft);margin:24px 0 0;max-width:56ch}
+  .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+  .btn{display:inline-block;text-decoration:none;background:var(--accent);color:#fff;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;transition:filter .15s}
+  .btn:hover{filter:brightness(1.07)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{filter:none;background:#fff}
+  @media(max-width:680px){.hero h1{font-size:36px}.hero{padding:52px 0 44px}}
+
+  /* message band */
+  .band{background:var(--accent-d);color:#eaf3ef;padding:66px 0}
+  .band h2{color:#fff;font-size:30px;margin:0 0 6px}
+  .band .k{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:#8fb7a8;font-weight:700;margin:0 0 18px}
+  .band p{font-size:18px;color:#cfe2da;max-width:64ch;margin:16px 0 0}
+  .band .stats{display:flex;gap:40px;flex-wrap:wrap;margin-top:36px}
+  .band .stat .n{font-family:Georgia,serif;font-size:40px;color:#fff;line-height:1}
+  .band .stat .l{font-size:13.5px;color:#8fb7a8;margin-top:6px;max-width:22ch}
+
+  section.blk{padding:64px 0}
+  .lbl{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 12px}
+  .blk h2{font-size:32px;margin:0 0 8px}
+  .blk .intro{font-size:17px;color:var(--ink-soft);max-width:60ch;margin:0 0 30px}
+
+  /* z-scale ladder */
+  .zladder{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .zrow{display:flex;gap:18px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left-width:6px;border-radius:14px;padding:18px 20px}
+  .zrow .zn{flex:none;width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Georgia,serif}
+  .zrow .zname{font-family:Georgia,serif;font-size:20px;font-weight:700;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .zrow .zpct{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+  .zrow p{margin:4px 0 0;font-size:15px;color:var(--ink-soft)}
+  .zrow.z1{border-left-color:var(--z1)} .zrow.z1 .zn{background:var(--z1)}
+  .zrow.z2{border-left-color:var(--z2)} .zrow.z2 .zn{background:var(--z2)}
+  .zrow.z3{border-left-color:var(--z3)} .zrow.z3 .zn{background:var(--z3)}
+  .zrow.z4{border-left-color:var(--z4)} .zrow.z4 .zn{background:var(--z4)}
+  .zrow.z5{border-left-color:var(--z5)} .zrow.z5 .zn{background:var(--z5)}
+
+  /* book */
+  .book{display:flex;gap:36px;align-items:center;flex-wrap:wrap}
+  .cover{flex:none;width:210px;height:300px;border-radius:8px;background:linear-gradient(150deg,#12241d,#1f6f5c);box-shadow:var(--shadow);color:#eaf3ef;padding:26px 22px;display:flex;flex-direction:column;justify-content:space-between}
+  .cover .ct{font-family:Georgia,serif;font-size:24px;line-height:1.15;font-weight:700}
+  .cover .cs{font-size:12.5px;color:#a9cabe;letter-spacing:.03em}
+  .cover .cb{font-size:12px;color:#8fb7a8}
+  .book .bd{flex:1;min-width:260px}
+  .book .bd p{font-size:16.5px;color:var(--ink-soft);margin:0 0 18px}
+
+  /* tools grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  .tool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;text-decoration:none;display:block;transition:transform .12s,box-shadow .12s;position:relative}
+  .tool:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .tool .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:3px 9px;border-radius:999px;margin-bottom:12px}
+  .tool h3{font-size:19px;margin:0 0 4px}
+  .tool p{font-size:14px;color:var(--ink-soft);margin:0}
+  .tool .go{margin-top:12px;font-size:13.5px;font-weight:600;color:var(--accent)}
+  .tool.soon{opacity:.72}
+  .tool.soon .go{color:var(--muted)}
+
+  /* speaking */
+  .speak{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start}
+  .speak .sd{flex:1;min-width:280px}
+  .speak .sd p{font-size:16.5px;color:var(--ink-soft)}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted);font-size:14px}
+  footer .in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="in">
+    <span class="brand">Jerry Peterson</span>
+    <div class="links">
+      <a href="#message">The Message</a>
+      <a href="#book">The Book</a>
+      <a href="#tools">The Tools</a>
+      <a href="speaking.html">Speaking</a>
+      <a href="#tools" class="cta">Find your Z Scale →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Author · Speaker · The Z Scale</p>
+    <h1>Your best people aren't the problem. The system is.</h1>
+    <p class="lead">I help leaders convert a beaten-down workforce from Zombies to Zealots — and recover the capacity that's been hiding in plain sight the whole time.</p>
+    <div class="btns">
+      <a class="btn" href="#tools">Find your Z Scale level</a>
+      <a class="btn ghost" href="#book">Read the book</a>
+    </div>
+  </div>
+</header>
+
+<div class="band" id="message">
+  <div class="wrap">
+    <p class="k">The Message</p>
+    <h2>Being beaten by the system is not a character flaw.</h2>
+    <p>When a good person shows up as a Zombie — doing the minimum, waiting to be told — the system did that to them. And what the system created, the system can undo. This isn't a motivational slogan. It's a hundred years of quality thinking, from Deming forward, pointed at people instead of defects.</p>
+    <p>Which means the condition is reversible. That's the hope buried in the data — and the responsibility, too.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">94%</div><div class="l">of problems belong to the system, not the individual (Deming)</div></div>
+      <div class="stat"><div class="n">70%</div><div class="l">of the variance in engagement is driven by management (Gallup)</div></div>
+      <div class="stat"><div class="n">$10T</div><div class="l">lost to disengagement worldwide each year (Gallup, 2026)</div></div>
+    </div>
+  </div>
+</div>
+
+<section class="blk" id="zscale" style="background:#fbf9f5;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <p class="lbl">The Z Scale</p>
+    <h2>Disengagement isn't on or off. It's a scale.</h2>
+    <p class="intro">Capable people don't quit and leave — they quit and stay, worn down one decision at a time. The Z Scale places every person and team on five levels, from the Zombie the system has beaten down to the rare Zealot Leader whose greatest contribution is creating other Zealots. Each step up recovers roughly ten percent of a person's real capacity — and because the scale measures movement, you can finally see progress instead of guessing at it.</p>
+    <div class="zladder">
+      <div class="zrow z1"><span class="zn">1</span><div><div class="zname">Zombie <span class="zpct">~60% capacity</span></div><p>Beaten down by the system. Shows up, does the minimum to survive, and does nothing until someone tells them to.</p></div></div>
+      <div class="zrow z2"><span class="zn">2</span><div><div class="zname">Zoner <span class="zpct">~70% capacity</span></div><p>Follows instructions and executes plans reliably — but has stopped offering anything of themselves.</p></div></div>
+      <div class="zrow z3"><span class="zn">3</span><div><div class="zname">Zephyr <span class="zpct">~80% capacity</span></div><p>The spark is lit. Real signs of inspiration and ownership, though not yet ready to rebuild the system.</p></div></div>
+      <div class="zrow z4"><span class="zn">4</span><div><div class="zname">Zealot <span class="zpct">~90% capacity</span></div><p>Sees where systems fail and is obsessed with improving them. Takes ownership and insists on being creative.</p></div></div>
+      <div class="zrow z5"><span class="zn">5</span><div><div class="zname">Zealot Leader <span class="zpct">~100% capacity</span></div><p>Rare. A Zealot who has learned their greatest contribution isn't what they do — it's the Zealots they create in others.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="book">
+  <div class="wrap">
+    <p class="lbl">The Book</p>
+    <div class="book">
+      <div class="cover">
+        <div class="ct">Raising the Dead</div>
+        <div class="cs">Converting Your Workforce from Zombies to Zealots</div>
+        <div class="cb">Jerry Peterson</div>
+      </div>
+      <div class="bd">
+        <h2 style="margin-top:0">The field guide to bringing a workforce back to life.</h2>
+        <p>Most leaders have optimized the machine and never looked at the people standing at its constraints. <em>Raising the Dead</em> gives you the Z Scale — a way to see exactly where each person and team sits on the spectrum from Zombie to Zealot Leader, and a path to move them upward. Built on the shoulders of Deming, Goldratt, Pink, and Kim, and written for the leader who's ready to stop blaming their people and start rebuilding the system around them.</p>
+        <div class="btns" style="margin-top:6px">
+          <a class="btn" href="#" id="amazonLink">Get it on Amazon</a>
+          <a class="btn ghost" href="#" id="chapterLink">Read the first chapter free</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="tools" style="background:#fbf9f5;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <p class="lbl">The Z Scale Assessment Series</p>
+    <h2>Find out where you — and your team — really stand.</h2>
+    <p class="intro">Six tools that turn the ideas in the book into a measurement. Free to use. Start with the ZTI to place yourself on the Z Scale in two minutes.</p>
+    <div class="grid">
+      <a class="tool" href="zti.html">
+        <span class="tag" style="background:var(--z4)">Individual</span>
+        <h3>ZTI</h3>
+        <p>The Zealot Transformation Index. Where you fall on the Z Scale, built on Autonomy, Mastery &amp; Purpose.</p>
+        <div class="go">Take the assessment →</div>
+      </a>
+      <a class="tool" href="zsa.html">
+        <span class="tag" style="background:var(--z2)">Team</span>
+        <h3>ZSA</h3>
+        <p>The Z Scale Assessment. The team's twenty-question read on the Z Scale across five drivers — Flow, Feedback, Continuous Learning, Autonomy &amp; Purpose — and which one is holding you back.</p>
+        <div class="go">Take the assessment →</div>
+      </a>
+      <a class="tool" href="zta.html">
+        <span class="tag" style="background:var(--z3)">Time &amp; Capacity</span>
+        <h3>ZTA</h3>
+        <p>The Zealot Time Audit. How little of your week lands on what matters — and the dollars trapped in the gap.</p>
+        <div class="go">Run the audit →</div>
+      </a>
+      <a class="tool" href="ldi.html">
+        <span class="tag" style="background:var(--z5)">Leadership</span>
+        <h3>LDI</h3>
+        <p>The Leadership Depth Index. How many leaders you create — measured two layers down, where it can't be gamed.</p>
+        <div class="go">Calculate your LDI →</div>
+      </a>
+      <div class="tool soon">
+        <span class="tag" style="background:var(--muted)">Coming soon</span>
+        <h3>EHA</h3>
+        <p>The Environment Health Assessment. The gap between how well you think you serve your team and how they'd grade you.</p>
+        <div class="go">In the workshop</div>
+      </div>
+      <div class="tool soon">
+        <span class="tag" style="background:var(--muted)">Coming soon</span>
+        <h3>ASTA</h3>
+        <p>The AI Assisted Staff Time Audit. A plan to at least double a team's capacity without hiring or buying anything.</p>
+        <div class="go">In the workshop</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="speaking">
+  <div class="wrap">
+    <p class="lbl">Speaking</p>
+    <div class="speak">
+      <img src="jerry-peterson.jpg" alt="Jerry Peterson" style="flex:none;width:230px;border-radius:14px;box-shadow:var(--shadow)">
+      <div class="sd">
+        <h2 style="margin-top:0">Bring the Z Scale to your stage or your leadership team.</h2>
+        <p>A talk that reframes disengagement not as a people problem to be scolded, but as a system problem to be solved — and hands leaders the lever to solve it. Equal parts wake-up call and roadmap, grounded in Deming, Goldratt, and the real cost of leaving capacity on the table.</p>
+        <p style="font-size:15px;color:var(--muted)">A catalog of 24 talks — from the Z Scale and the Human Constraint to the Leadership Translation Gap.</p>
+        <div class="btns" style="margin-top:4px">
+          <a class="btn" href="speaking.html">See all 24 talks</a>
+          <a class="btn ghost" href="#contact">Invite Jerry to speak</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap in">
+    <div>© <span id="yr"></span> Jerry Peterson · <em>Raising the Dead</em></div>
+    <div>Consulting: <a href="#">RightSide Inc</a> &nbsp;·&nbsp; <a href="mailto:jerry@jerrypeterson.ai">jerry@jerrypeterson.ai</a></div>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+</body>
+</html>
