@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The AI-Assisted Staff Time Audit</title>
+<style>
+  :root{
+    --ink:#141b22;--ink-soft:#3f4b57;--muted:#7a8794;--line:#e4ddd2;
+    --paper:#f7f4ef;--card:#ffffff;--accent:#1f6f5c;
+    --bus:#1f9d6a;--int:#5f83a8;--ops:#d7a53f;--unp:#d1495b;
+    --del:#b08968;--rep:#d95f47;--inv:#4f7cac;--perf:#1f9d6a;
+    --shadow:0 10px 40px rgba(20,27,34,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 72px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:36px 32px}
+  .eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px}
+  h1{font-family:Georgia,serif;font-size:31px;line-height:1.15;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+  h1 .abbr{color:var(--accent)}
+  .sub{color:var(--ink-soft);font-size:16.5px;margin:10px 0 0}
+  .lede{color:var(--ink-soft);font-size:15.5px;margin:16px 0 0}
+  .byline{margin-top:22px;font-size:13px;color:var(--muted)}
+  .byline b{color:var(--ink-soft);font-weight:600}
+
+  .sec{margin-top:30px;padding-top:26px;border-top:1px solid var(--line)}
+  .sec:first-of-type{border-top:0;padding-top:0}
+  .sec h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 4px}
+  .sec .note{font-size:13.5px;color:var(--muted);margin:0 0 16px}
+
+  label.f{display:block;margin:14px 0 0;font-size:14px;font-weight:600;color:var(--ink)}
+  .hint{font-weight:400;color:var(--muted);font-size:12.5px}
+  input[type=number]{font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:6px;background:#fff;color:var(--ink)}
+  input[type=number]:focus{outline:none;border-color:var(--accent)}
+  select{font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:6px;background:#fff;color:var(--ink)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .rate-out{margin-top:10px;font-size:13.5px;color:var(--ink-soft);background:#f4f8f6;border:1px solid #dcece5;border-radius:10px;padding:10px 12px}
+  .rate-out b{color:var(--accent)}
+
+  /* fork */
+  .fork{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .forkopt{border:1.5px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s,background .15s}
+  .forkopt:hover{background:#faf8f4}
+  .forkopt.on{border-color:var(--accent);background:#f4f8f6}
+  .forkopt .ft{font-size:15px;font-weight:700}
+  .forkopt .fd{font-size:12.5px;color:var(--muted);margin-top:4px}
+  @media(max-width:560px){.fork{grid-template-columns:1fr}}
+
+  .quad{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+  .quad .qname{font-size:13px;font-weight:700}
+  .quad .qsub{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .quad input{margin-top:8px}
+  .sumline{margin-top:10px;font-size:13px;color:var(--muted)}
+  .sumline b{color:var(--ink)}
+  .sumline.bad b{color:var(--unp)}
+
+  .colbus{color:var(--bus)}.colint{color:var(--int)}.colops{color:var(--ops)}.colunp{color:var(--unp)}
+  .coldel{color:var(--del)}.colrep{color:var(--rep)}.colinv{color:var(--inv)}.colperf{color:var(--perf)}
+
+  .btn{appearance:none;border:0;cursor:pointer;background:var(--accent);color:#fff;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;font-family:inherit;transition:filter .15s}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#faf8f4}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:28px}
+  .spacer{flex:1}
+  .warn{color:var(--unp);font-size:13.5px;margin-top:12px;min-height:1px}
+
+  .hero{background:#12241d;color:#eaf3ef;border-radius:16px;padding:26px 24px;margin:4px 0 0}
+  .hero .k{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:#8fb7a8;font-weight:700}
+  .hero .big{font-family:Georgia,serif;font-size:52px;line-height:1;margin:10px 0 6px;color:#fff}
+  .hero .big small{font-size:22px;color:#8fb7a8}
+  .hero .say{font-size:15.5px;color:#cfe2da;margin:8px 0 0}
+  .rlabel{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:30px 0 14px}
+
+  .gap{display:flex;align-items:stretch;gap:14px;flex-wrap:wrap}
+  .gapbox{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
+  .gapbox .t{font-size:12px;color:var(--muted);font-weight:600}
+  .gapbox .v{font-family:Georgia,serif;font-size:30px;margin-top:4px}
+  .gapbox .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+  .bar-row{display:flex;align-items:center;gap:14px;margin:0 0 11px}
+  .bar-row .name{flex:none;width:120px;font-size:13.5px;font-weight:600}
+  .bar-row .rail{flex:1;height:9px;background:#eee7db;border-radius:999px;overflow:hidden}
+  .bar-row .val{display:block;height:100%;border-radius:999px}
+  .bar-row .pct{flex:none;width:44px;text-align:right;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+  .money{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+  .mbox{flex:1;min-width:170px;border-radius:12px;padding:16px 18px}
+  .mbox.cost{background:#fbeeea;border:1px solid #f0cfc4}
+  .mbox.buy{background:#eef4f9;border:1px solid #cfe0ee}
+  .mbox.win{background:#eef7f1;border:1px solid #cfe7d8}
+  .mbox .t{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .mbox .v{font-family:Georgia,serif;font-size:28px;margin-top:6px}
+  .mbox .d{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+
+  .callout{margin-top:26px;padding:18px 20px;border-radius:14px;background:#f7f4ef;border:1px solid var(--line);font-size:15.5px;color:var(--ink)}
+  .callout b{color:var(--accent)}
+  .plan{margin-top:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .plan .ph{background:#12241d;color:#eaf3ef;padding:14px 18px;font-weight:700;font-size:15px}
+  .plan .pb{padding:6px 18px 14px}
+  .tier{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+  .tier:first-child{border-top:0}
+  .tier .tn{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .tier .tt{font-size:14.5px}
+  .tier .tt b{color:var(--accent)}
+  .hide{display:none}
+  @media (max-width:560px){
+    .card{padding:26px 18px}
+    h1{font-size:25px}
+    .grid2,.grid4{grid-template-columns:1fr}
+    .hero .big{font-size:42px}
+    .bar-row .name{width:96px;font-size:12.5px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <!-- FORM -->
+    <section id="form">
+      <p class="eyebrow">The Z Scale Assessment Series</p>
+      <h1>The AI-Assisted Staff Time Audit <span class="abbr">(ASTA)</span></h1>
+      <p class="sub">The ZTA at team scale — how much of your team's week actually creates value, and the capacity hiding in plain sight.</p>
+      <p class="lede">Same engine as the Zealot Time Audit, run across a whole team. The first question sets everything: is this team the <b>constraint</b>, or not? Because the right move for a bottleneck team is the opposite of the right move for a non-bottleneck one — and getting that backwards is why most "efficiency" drives quietly destroy throughput.</p>
+      <p class="byline">From <b>Raising the Dead: Converting Your Workforce from Zombies to Zealots</b> · by Jerry Peterson</p>
+
+      <div class="sec">
+        <h2>1 · The fork — is this team the constraint?</h2>
+        <p class="note">Everything downstream depends on this. A bottleneck team you <i>exploit</i>; a non-bottleneck team you <i>subordinate</i> to the constraint — never maximize.</p>
+        <div class="fork">
+          <div class="forkopt" id="forkB" onclick="setFork('bottleneck')">
+            <div class="ft">This team IS the bottleneck</div>
+            <div class="fd">The constraint. The whole system's output is paced by this team.</div>
+          </div>
+          <div class="forkopt" id="forkN" onclick="setFork('nonbottleneck')">
+            <div class="ft">This team is NOT the bottleneck</div>
+            <div class="fd">A supporting team. Its job is to serve the constraint, not run flat-out.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>2 · The team and its blended rate</h2>
+        <p class="note">This puts real dollars on the capacity we're about to find.</p>
+        <div class="grid2">
+          <div>
+            <label class="f">People on the team</label>
+            <input type="number" id="tsize" placeholder="6" oninput="rate()">
+          </div>
+          <div>
+            <label class="f">Hours each works / week</label>
+            <input type="number" id="hours" value="42" oninput="rate()">
+          </div>
+        </div>
+        <label class="f">Blended annual salary on the team ($) <span class="hint">a typical fully-loaded salary</span></label>
+        <input type="number" id="salary" placeholder="90000" oninput="rate()">
+        <label class="f">Team's Z Scale level <span class="hint">(from the ZSA — sets the team capacity coefficient)</span></label>
+        <select id="zsa" onchange="rate()">
+          <option value="60">Level 1 — Zombie (60%)</option>
+          <option value="70">Level 2 — Zoner (70%)</option>
+          <option value="80" selected>Level 3 — Zephyr (80%)</option>
+          <option value="90">Level 4 — Zealot (90%)</option>
+          <option value="100">Level 5 — Zealot Leader (100%)</option>
+        </select>
+        <div class="rate-out" id="rateOut">Enter the team details to see blended rate and total weekly hours.</div>
+      </div>
+
+      <div class="sec">
+        <h2>3 · The four types of work — guess vs. truth</h2>
+        <p class="note">What you'd <i>estimate</i> the team's week looks like, then what a logged week actually showed. Each column totals 100%.</p>
+        <div class="grid2">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">YOUR ESTIMATE</div>
+            <label class="f colbus">Business projects <span class="hint">value-creating</span></label><input type="number" id="eb" placeholder="%" oninput="sums()">
+            <label class="f colint">Internal systems work</label><input type="number" id="ei" placeholder="%" oninput="sums()">
+            <label class="f colops">Maintenance &amp; repairs</label><input type="number" id="em" placeholder="%" oninput="sums()">
+            <label class="f colunp">Unplanned / firefighting</label><input type="number" id="eu" placeholder="%" oninput="sums()">
+            <div class="sumline" id="estSum">Total: 0%</div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">THE LOGGED WEEK</div>
+            <label class="f colbus">Business projects</label><input type="number" id="ab" placeholder="%" oninput="sums()">
+            <label class="f colint">Internal systems work</label><input type="number" id="ai" placeholder="%" oninput="sums()">
+            <label class="f colops">Maintenance &amp; repairs</label><input type="number" id="am" placeholder="%" oninput="sums()">
+            <label class="f colunp">Unplanned / firefighting</label><input type="number" id="au" placeholder="%" oninput="sums()">
+            <div class="sumline" id="actSum">Total: 0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>4 · The DRIP matrix — where the team's week really went</h2>
+        <p class="note">Split the logged week across the four quadrants. Invest + Perform is the work that matters; Delegate + Replace is what should be bought back or systematized. Total 100%.</p>
+        <div class="grid4">
+          <div class="quad"><div class="qname coldel">Delegate</div><div class="qsub">low value, someone else can do</div><input type="number" id="dd" placeholder="%" oninput="sums()"></div>
+          <div class="quad"><div class="qname colrep">Replace</div><div class="qsub">low value, systematize away</div><input type="number" id="dr" placeholder="%" oninput="sums()"></div>
+          <div class="quad"><div class="qname colinv">Invest</div><div class="qsub">high value — grows the business</div><input type="number" id="di" placeholder="%" oninput="sums()"></div>
+          <div class="quad"><div class="qname colperf">Perform</div><div class="qsub">high value — core craft</div><input type="number" id="dp" placeholder="%" oninput="sums()"></div>
+        </div>
+        <div class="sumline" id="dripSum">Total: 0%</div>
+      </div>
+
+      <div class="sec">
+        <h2>5 · Flow efficiency</h2>
+        <p class="note">Of the team's working time, roughly how much is lost to waiting, queues, hand-offs, and delays? (Flow efficiency = the rest.)</p>
+        <label class="f">Time lost to waiting / queues (%)</label>
+        <input type="number" id="wait" placeholder="55" oninput="rate()">
+      </div>
+
+      <div class="warn" id="warn"></div>
+      <div class="row">
+        <button class="btn" onclick="run()">Reveal the team's reality →</button>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="hide">
+      <p class="eyebrow">The AI-Assisted Staff Time Audit · Result</p>
+
+      <div class="hero">
+        <div class="k" id="heroK">The team's true productive time on what matters</div>
+        <div class="big" id="heroPct">—</div>
+        <div class="say" id="heroSay"></div>
+      </div>
+
+      <div class="rlabel">The perception gap — Business Projects</div>
+      <div class="gap">
+        <div class="gapbox"><div class="t">You estimated</div><div class="v colbus" id="gpEst">—</div><div class="d">of the team's week on value-creating work</div></div>
+        <div class="gapbox"><div class="t">The audit found</div><div class="v" id="gpAct">—</div><div class="d">what the logged week actually showed</div></div>
+        <div class="gapbox"><div class="t">The gap</div><div class="v" id="gpGap">—</div><div class="d" id="gpGapD">the story vs. the truth</div></div>
+      </div>
+
+      <div class="rlabel">Where the team's week really went — DRIP</div>
+      <div id="dripBars"></div>
+
+      <div class="rlabel">The latent team capacity, by three lenses</div>
+      <div class="gap">
+        <div class="gapbox"><div class="t">Offloadable work</div><div class="v" id="lcOff">—</div><div class="d">team hrs/week on Delegate + Replace</div></div>
+        <div class="gapbox"><div class="t">Capacity not brought</div><div class="v" id="lcCap">—</div><div class="d">team hrs/week lost below full Z Scale</div></div>
+        <div class="gapbox"><div class="t">Lost to queues</div><div class="v" id="lcFlow">—</div><div class="d">team hrs/week drowned in waiting</div></div>
+      </div>
+
+      <div class="rlabel">The dollars</div>
+      <div class="money">
+        <div class="mbox cost"><div class="t">Costing you</div><div class="v" id="mCost">—</div><div class="d">a year for the team to do buy-back-able work, at blended rate</div></div>
+        <div class="mbox buy"><div class="t">Buy it back for</div><div class="v" id="mBuy">—</div><div class="d">a year at the blended Buyback Rate</div></div>
+        <div class="mbox win"><div class="t">The arbitrage</div><div class="v" id="mWin">—</div><div class="d">freed for higher-value work, at a fraction of the cost</div></div>
+      </div>
+
+      <div class="rlabel" id="planLabel">Your optimization path</div>
+      <div class="plan" id="planBox"></div>
+
+      <div class="callout" id="finalCallout"></div>
+
+      <div class="row">
+        <button class="btn ghost" onclick="edit()">← Edit inputs</button>
+        <div class="spacer"></div>
+        <button class="btn" id="copyBtn" onclick="copyBrief()">Copy brief for Claude ⧉</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>parseFloat($(id).value)||0;
+function fmtMoney(n){return '$'+Math.round(n).toLocaleString();}
+let fork='';
+
+function setFork(f){
+  fork=f;
+  $('forkB').classList.toggle('on',f==='bottleneck');
+  $('forkN').classList.toggle('on',f==='nonbottleneck');
+  save();
+}
+
+function teamHours(){ return (num('tsize'))*(num('hours')||42); }
+function rate(){
+  const sal=num('salary'), th=teamHours();
+  const eff=sal/2000, buy=eff/4;
+  if(sal>0 && num('tsize')>0){
+    $('rateOut').innerHTML=`Blended rate <b>${fmtMoney(eff)}/hr</b> &nbsp;·&nbsp; Buyback Rate <b>${fmtMoney(buy)}/hr</b> &nbsp;·&nbsp; Team capacity <b>${th} hrs/week</b>`;
+  } else {
+    $('rateOut').textContent='Enter the team details to see blended rate and total weekly hours.';
+  }
+  save();
+}
+function groupSum(ids){return ids.reduce((a,id)=>a+num(id),0);}
+function sums(){
+  const e=groupSum(['eb','ei','em','eu']);
+  const a=groupSum(['ab','ai','am','au']);
+  const d=groupSum(['dd','dr','di','dp']);
+  $('estSum').innerHTML='Total: <b>'+e+'%</b>'; $('estSum').className='sumline'+(e!==100?' bad':'');
+  $('actSum').innerHTML='Total: <b>'+a+'%</b>'; $('actSum').className='sumline'+(a!==100?' bad':'');
+  $('dripSum').innerHTML='Total: <b>'+d+'%</b>'; $('dripSum').className='sumline'+(d!==100?' bad':'');
+  save();
+}
+
+function run(){
+  const e=groupSum(['eb','ei','em','eu']);
+  const a=groupSum(['ab','ai','am','au']);
+  const d=groupSum(['dd','dr','di','dp']);
+  const problems=[];
+  if(!fork) problems.push('choose whether this team is the bottleneck (Step 1)');
+  if(num('tsize')<=0) problems.push('the number of people on the team');
+  if(num('salary')<=0) problems.push('the blended salary');
+  if(e!==100) problems.push('the Estimate column (must total 100%)');
+  if(a!==100) problems.push('the Logged Week column (must total 100%)');
+  if(d!==100) problems.push('the DRIP quadrants (must total 100%)');
+  if(problems.length){ $('warn').textContent='Please fix: '+problems.join('; ')+'.'; return; }
+  $('warn').textContent='';
+
+  const th=teamHours();
+  const cap=parseFloat($('zsa').value)/100;
+  const flow=Math.min(1,Math.max(0,(100-num('wait'))/100));
+  const matters=(num('di')+num('dp'))/100;
+  const offload=(num('dd')+num('dr'))/100;
+  const shock=matters*cap*flow;
+  const eff=num('salary')/2000, buy=eff/4;
+  const unplanned=num('au')/100;
+
+  $('heroPct').innerHTML=Math.round(shock*100)+'<small>% of the team\'s week</small>';
+  $('heroSay').textContent=`That's about ${(shock*th).toFixed(0)} of the team's ${th} hours/week — high-value work, done at capacity, actually flowing. The rest is recoverable.`;
+
+  const est=num('eb'), act=num('ab'), gap=act-est;
+  $('gpEst').textContent=est+'%';
+  $('gpAct').textContent=act+'%';
+  $('gpGap').textContent=(gap>0?'+':'')+gap+' pts';
+  $('gpGap').className='v '+(gap<0?'colunp':'colbus');
+  $('gpGapD').textContent = gap<0 ? 'the team is on less value-creating work than you thought' : (gap>0?'more than you thought — nice':'right on the money');
+
+  const drip=[
+    {n:'Delegate',v:num('dd'),c:'var(--del)'},
+    {n:'Replace', v:num('dr'),c:'var(--rep)'},
+    {n:'Invest',  v:num('di'),c:'var(--inv)'},
+    {n:'Perform', v:num('dp'),c:'var(--perf)'}
+  ];
+  $('dripBars').innerHTML=drip.map(x=>
+    `<div class="bar-row"><span class="name">${x.n}</span><span class="rail"><span class="val" style="width:${x.v}%;background:${x.c}"></span></span><span class="pct">${x.v}%</span></div>`
+  ).join('');
+
+  const offHrs=offload*th, capHrs=th*(1-cap), flowHrs=th*(1-flow), unpHrs=unplanned*th;
+  $('lcOff').textContent=offHrs.toFixed(0)+' hrs';
+  $('lcCap').textContent=capHrs.toFixed(0)+' hrs';
+  $('lcFlow').textContent=flowHrs.toFixed(0)+' hrs';
+
+  const wk=50;
+  const cost=offHrs*eff*wk, buyCost=offHrs*buy*wk, win=cost-buyCost;
+  $('mCost').textContent=fmtMoney(cost);
+  $('mBuy').textContent=fmtMoney(buyCost);
+  $('mWin').textContent=fmtMoney(win);
+
+  // fork-specific optimization plan
+  if(fork==='bottleneck'){
+    $('heroK').textContent="The team's true throughput on what matters";
+    $('planLabel').textContent='Your path — EXPLOIT the constraint';
+    const newBus = Math.min(100, num('ab')+num('dd')+num('dr'));
+    $('planBox').innerHTML=
+      `<div class="ph">This team paces the whole system. Every hour here that isn't throughput is throughput lost everywhere.</div>
+       <div class="pb">
+        <div class="tier"><div class="tn">1</div><div class="tt"><b>Maximize business-project time.</b> At the constraint, business-project time <i>is</i> system throughput. Protect and grow it above all.</div></div>
+        <div class="tier"><div class="tn">2</div><div class="tt"><b>Strip everything else off them.</b> Move the <b>${offHrs.toFixed(0)} team hrs/week</b> of Delegate + Replace work to other people, systems, or AI — it should not touch the constraint.</div></div>
+        <div class="tier"><div class="tn">3</div><div class="tt"><b>Kill the unplanned work.</b> The <b>${unpHrs.toFixed(0)} hrs/week</b> lost to firefighting is pure stolen throughput. Protect the constraint from interruptions.</div></div>
+       </div>`;
+    $('finalCallout').innerHTML=
+      `Clear the buy-back-able and firefighting work off this team and its business-project time rises from <b>${num('ab')}%</b> toward <b>${newBus}%</b> of the week — throughput unlocked with <b>no new hire and nothing bought</b>. That's the constraint doing more of the only thing that matters. Doubling the bottleneck's real output is usually just math once the waste is gone.`;
+  } else {
+    $('heroK').textContent="The team's true productive time on what matters";
+    $('planLabel').textContent='Your path — SUBORDINATE to the constraint';
+    const slack=offHrs; // reclaimable capacity becomes protected slack
+    $('planBox').innerHTML=
+      `<div class="ph">This team should NOT run flat-out. Maximizing it just piles up work in front of the real constraint. Pace to the bottleneck — then reinvest the slack.</div>
+       <div class="pb">
+        <div class="tier"><div class="tn">1</div><div class="tt"><b>Reserve — feed the constraint.</b> Match business-project output to the bottleneck's capacity. Never starve it; never overproduce (that just builds WIP in front of it).</div></div>
+        <div class="tier"><div class="tn">2</div><div class="tt"><b>Absorb.</b> Take on the internal + maintenance work shifted <i>off</i> the bottleneck — the lower-value work landing where it belongs, relieving the constraint.</div></div>
+        <div class="tier"><div class="tn">3</div><div class="tt"><b>Invest the true slack.</b> The <b>~${slack.toFixed(0)} team hrs/week</b> left after tiers 1–2 goes into <b>Mastery</b> (skill/craft — the M in AMP, which climbs the Z Scale) and <b>innovation experiments</b> — not busywork.</div></div>
+       </div>`;
+    $('finalCallout').innerHTML=
+      `Here's the reframe most executives fight: that <b>~${slack.toFixed(0)} hrs/week</b> of slack is not waste to scrub out — it's <b>the R&D budget you already own and aren't spending.</b> Point it at mastery and experiments and the innovation budget was free. (Cost accounting says keep everyone 100% utilized; Theory of Constraints proves that local "efficiency" throttles the whole system. That's why this number is hard to accept — and why it's right.)`;
+  }
+
+  $('form').classList.add('hide');
+  $('results').classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function edit(){ $('results').classList.add('hide'); $('form').classList.remove('hide'); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function copyBrief(){
+  const th=teamHours(), cap=parseFloat($('zsa').value), flow=Math.min(100,Math.max(0,100-num('wait')));
+  const matters=num('di')+num('dp'), offload=num('dd')+num('dr');
+  const shock=Math.round((matters/100)*(cap/100)*(flow/100)*100);
+  const eff=num('salary')/2000;
+  const brief=
+`AI-ASSISTED STAFF TIME AUDIT — BRIEF
+Team type: ${fork==='bottleneck'?'BOTTLENECK (the constraint) — EXPLOIT':'NON-BOTTLENECK — SUBORDINATE to the constraint'}
+Team: ${num('tsize')} people | ${num('hours')||42} hrs each | ${th} team hrs/week
+Blended rate: ${fmtMoney(eff)}/hr | Buyback: ${fmtMoney(eff/4)}/hr | Team Z Scale capacity: ${cap}% | Flow efficiency: ${flow}%
+4 Types estimate vs actual — Business ${num('eb')}%→${num('ab')}%, Internal ${num('ei')}%→${num('ai')}%, Maintenance ${num('em')}%→${num('am')}%, Unplanned ${num('eu')}%→${num('au')}%
+DRIP — Delegate ${num('dd')}%, Replace ${num('dr')}%, Invest ${num('di')}%, Perform ${num('dp')}%
+Time on what matters (Invest+Perform): ${matters}% | Offloadable (Delegate+Replace): ${offload}%
+TRUE productive team time on what matters: ${shock}% of the week
+Ask: ${fork==='bottleneck'
+ ? 'build a plan to at least double the throughput of this bottleneck team by exploiting the constraint — maximize business-project time, strip off Delegate/Replace work, kill unplanned work — without hiring or buying anything.'
+ : 'build a plan to subordinate this non-bottleneck team to the constraint — pace (do not maximize) output to the bottleneck, absorb work shifted off it, and invest the remaining slack in Mastery and innovation as a free R&D budget. Measure engagement with a before/after ZSA.'}`;
+  navigator.clipboard.writeText(brief).then(()=>{
+    $('copyBtn').textContent='Copied ✓';
+    setTimeout(()=>$('copyBtn').textContent='Copy brief for Claude ⧉',1800);
+  }).catch(()=>{ $('copyBtn').textContent='Copy failed — select manually'; });
+}
+
+const FIELDS=['tsize','hours','salary','zsa','eb','ei','em','eu','ab','ai','am','au','dd','dr','di','dp','wait'];
+function save(){ try{ const o={fork}; FIELDS.forEach(f=>o[f]=$(f).value); localStorage.setItem('asta',JSON.stringify(o)); }catch(e){} }
+function load(){ try{ const o=JSON.parse(localStorage.getItem('asta')||'{}'); FIELDS.forEach(f=>{ if(o[f]!==undefined&&o[f]!=='') $(f).value=o[f]; }); if(o.fork) setFork(o.fork); }catch(e){} }
+load(); rate(); sums();
+</script>
+</body>
+</html>
