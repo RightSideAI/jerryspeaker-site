@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Environment Health Assessment</title>
+<style>
+  :root{
+    --ink:#141b22;--ink-soft:#3f4b57;--muted:#7a8794;--line:#e4ddd2;
+    --paper:#f7f4ef;--card:#ffffff;--accent:#1f6f5c;
+    --leader:#5f83a8;--team:#1f9d6a;
+    --ok:#1f9d6a;--warn:#d7a53f;--bad:#d1495b;--cool:#5f83a8;
+    --shadow:0 10px 40px rgba(20,27,34,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 72px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:36px 32px}
+  .eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px}
+  h1{font-family:Georgia,serif;font-size:31px;line-height:1.15;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+  h1 .abbr{color:var(--accent)}
+  .sub{color:var(--ink-soft);font-size:16.5px;margin:10px 0 0}
+  .lede{color:var(--ink-soft);font-size:15.5px;margin:16px 0 0}
+  .byline{margin-top:22px;font-size:13px;color:var(--muted)}
+  .byline b{color:var(--ink-soft);font-weight:600}
+
+  .sec{margin-top:30px;padding-top:26px;border-top:1px solid var(--line)}
+  .sec:first-of-type{border-top:0;padding-top:0}
+  .sec h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 4px}
+  .sec .note{font-size:13.5px;color:var(--muted);margin:0 0 16px}
+  .legend{display:flex;gap:18px;font-size:12.5px;font-weight:600;margin:2px 0 10px}
+  .legend .l1{color:var(--leader)} .legend .l2{color:var(--team)}
+  .legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+
+  .ideal{padding:16px 0;border-top:1px solid var(--line)}
+  .ideal:first-of-type{border-top:0}
+  .ideal .in{font-size:15px;font-weight:700}
+  .ideal .id{font-size:13px;color:var(--muted);margin:2px 0 10px}
+  .rate2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .rate2 label{display:block;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:4px}
+  .rate2 .rl{color:var(--leader)} .rate2 .rt{color:var(--team)}
+  select{font-family:inherit;font-size:15px;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;width:100%;background:#fff;color:var(--ink)}
+  select:focus{outline:none;border-color:var(--accent)}
+
+  .btn{appearance:none;border:0;cursor:pointer;background:var(--accent);color:#fff;font-size:16px;font-weight:600;padding:14px 26px;border-radius:12px;font-family:inherit;transition:filter .15s}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#faf8f4}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:28px}
+  .spacer{flex:1}
+  .warn{color:var(--bad);font-size:13.5px;margin-top:12px;min-height:1px}
+
+  .hero{border-radius:16px;padding:26px 24px;margin:4px 0 0;color:#eaf3ef}
+  .hero.b-ok{background:#12241d}
+  .hero.b-warn{background:#4a3a17}
+  .hero.b-bad{background:#4a1720}
+  .hero.b-cool{background:#182a3a}
+  .hero .k{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.8}
+  .hero .big{font-family:Georgia,serif;font-size:40px;line-height:1.05;margin:10px 0 6px;color:#fff}
+  .hero .gapnum{font-family:Georgia,serif;font-size:15px;color:#cfe2da;font-weight:400}
+  .hero .say{font-size:15.5px;color:#e4eeea;margin:10px 0 0}
+  .rlabel{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:30px 0 14px}
+
+  .irow{margin:0 0 16px}
+  .irow .ihead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .irow .iname{font-size:14px;font-weight:700}
+  .irow .igap{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
+  .rail2{position:relative;height:22px}
+  .rail2 .track{position:absolute;top:9px;left:0;right:0;height:4px;background:#eee7db;border-radius:999px}
+  .rail2 .dot{position:absolute;top:3px;width:16px;height:16px;border-radius:50%;transform:translateX(-50%);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .rail2 .dl{background:var(--leader)} .rail2 .dt{background:var(--team)}
+  .irow.flag .iname::after{content:" ← widest gap";color:var(--bad);font-weight:700;font-size:11.5px}
+
+  .callout{margin-top:26px;padding:18px 20px;border-radius:14px;background:#f7f4ef;border:1px solid var(--line);font-size:15.5px;color:var(--ink)}
+  .callout b{color:var(--accent)}
+  .hide{display:none}
+  @media (max-width:560px){
+    .card{padding:26px 18px}
+    h1{font-size:25px}
+    .rate2{grid-template-columns:1fr 1fr}
+    .hero .big{font-size:30px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <!-- FORM -->
+    <section id="form">
+      <p class="eyebrow">The Z Scale Assessment Series</p>
+      <h1>The Environment Health Assessment <span class="abbr">(EHA)</span></h1>
+      <p class="sub">How well you think you build the environment — versus how your team actually experiences it. The gap is the signal.</p>
+      <p class="lede">Leaders rate how well they build each of the <b>Five Ideals</b> of a healthy work environment. The team rates the same leader on the same five. When the two views diverge, that gap is the most useful number in leadership — because you can't fix an environment you can't see clearly. Rate each Ideal 1 (never) to 5 (always).</p>
+      <p class="byline">Built on the Five Ideals (Gene Kim) · from <b>Raising the Dead</b> by Jerry Peterson</p>
+
+      <div class="sec">
+        <h2>Rate the Five Ideals — both views</h2>
+        <p class="note">Enter your own honest read, and your team's average score (gather it first — anonymously is best).</p>
+        <div class="legend">
+          <span class="l1"><span class="sw" style="background:var(--leader)"></span>You (the leader)</span>
+          <span class="l2"><span class="sw" style="background:var(--team)"></span>Your team (average)</span>
+        </div>
+
+        <div id="ideals"></div>
+      </div>
+
+      <div class="warn" id="warn"></div>
+      <div class="row">
+        <button class="btn" onclick="run()">Reveal the gap →</button>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="hide">
+      <p class="eyebrow">The Environment Health Assessment · Result</p>
+
+      <div class="hero" id="hero">
+        <div class="k">Your environment gap</div>
+        <div class="big" id="bandName">—</div>
+        <div class="gapnum" id="gapNum"></div>
+        <div class="say" id="heroSay"></div>
+      </div>
+
+      <div class="rlabel">The five ideals — your view vs. your team's</div>
+      <div id="idealBars"></div>
+
+      <div class="callout" id="interp"></div>
+
+      <div class="row">
+        <button class="btn ghost" onclick="edit()">← Edit inputs</button>
+        <div class="spacer"></div>
+        <button class="btn" id="copyBtn" onclick="copyBrief()">Copy brief for Claude ⧉</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+const IDEALS=[
+  {k:'loc', n:'Locality & Simplicity', d:'People get work done without waiting on other teams or fighting needless complexity.'},
+  {k:'flow',n:'Focus, Flow & Joy',     d:'People work in focused flow — and find real satisfaction — instead of constant interruption.'},
+  {k:'imp', n:'Improvement of Daily Work', d:'We make deliberate time to improve how we work, not just grind through the work itself.'},
+  {k:'safe',n:'Psychological Safety',  d:'People feel safe to speak up, raise problems, and admit mistakes without fear.'},
+  {k:'cust',n:'Customer Focus',        d:'Everyone stays oriented to the real customer and what actually creates value for them.'}
+];
+const SCALE=[['','—'],['1','1 · Never'],['2','2 · Rarely'],['3','3 · Sometimes'],['4','4 · Usually'],['5','5 · Always']];
+
+function optHTML(){ return SCALE.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join(''); }
+$('ideals').innerHTML = IDEALS.map(i=>
+  `<div class="ideal">
+     <div class="in">${i.n}</div>
+     <div class="id">${i.d}</div>
+     <div class="rate2">
+       <div><label class="rl">You build it</label><select id="L_${i.k}" onchange="save()">${optHTML()}</select></div>
+       <div><label class="rt">Team's score</label><select id="T_${i.k}" onchange="save()">${optHTML()}</select></div>
+     </div>
+   </div>`
+).join('');
+
+function val(id){ const v=$(id).value; return v===''?null:parseFloat(v); }
+
+function run(){
+  const L=[], T=[]; let missing=false;
+  IDEALS.forEach(i=>{
+    const l=val('L_'+i.k), t=val('T_'+i.k);
+    if(l===null||t===null) missing=true;
+    L.push(l); T.push(t);
+  });
+  if(missing){ $('warn').textContent='Please rate all five Ideals from both views.'; return; }
+  $('warn').textContent='';
+
+  const lAvg=L.reduce((a,b)=>a+b,0)/5, tAvg=T.reduce((a,b)=>a+b,0)/5;
+  const gap=lAvg-tAvg;
+
+  // band
+  let band, cls, say;
+  if(gap>1.0){ band='The Transformation Illusion'; cls='b-bad';
+    say='You believe you have built the environment. Your team has not felt it. This is the most dangerous gap — declaring victory the people living it don\'t recognize. Start where the gap is widest.';
+  } else if(gap>=0.6){ band='The Observer Effect'; cls='b-warn';
+    say='A blind spot is forming. You rate the environment meaningfully higher than your team experiences it. Not a crisis — a signal, and a useful one. Look hardest at the Ideal where you and they diverge most.';
+  } else if(gap>-0.6){ band='Aligned'; cls='b-ok';
+    say='You and your team see the environment the same way — which is itself a sign of honesty and safety. Now put the lowest-scoring Ideal in your sights: that\'s the growth edge you both already agree on.';
+  } else { band='Understated'; cls='b-cool';
+    say='Your team experiences the environment better than you give yourself credit for. Either you\'re hard on yourself, or you\'re building something you can\'t yet see. Trust their read — and notice what you\'re doing right.';
+  }
+  $('hero').className='hero '+cls;
+  $('bandName').textContent=band;
+  $('gapNum').textContent=`You averaged ${lAvg.toFixed(1)} · Your team averaged ${tAvg.toFixed(1)} · Gap ${gap>0?'+':''}${gap.toFixed(1)}`;
+  $('heroSay').textContent=say;
+
+  // per-ideal bars + widest gap
+  let widest=-1, widestAbs=-1;
+  IDEALS.forEach((i,idx)=>{ const g=Math.abs(L[idx]-T[idx]); if(g>widestAbs){widestAbs=g; widest=idx;} });
+  $('idealBars').innerHTML=IDEALS.map((i,idx)=>{
+    const g=L[idx]-T[idx];
+    const lpos=(L[idx]-1)/4*100, tpos=(T[idx]-1)/4*100;
+    const gc = g>1.0?'var(--bad)':(g>=0.6?'var(--warn)':(g<=-0.6?'var(--cool)':'var(--ok)'));
+    return `<div class="irow ${idx===widest&&widestAbs>=0.6?'flag':''}">
+      <div class="ihead"><span class="iname">${i.n}</span><span class="igap" style="color:${gc}">${g>0?'+':''}${g.toFixed(1)} &nbsp;(you ${L[idx]} · team ${T[idx]})</span></div>
+      <div class="rail2"><span class="track"></span>
+        <span class="dot dt" style="left:${tpos}%"></span>
+        <span class="dot dl" style="left:${lpos}%"></span>
+      </div></div>`;
+  }).join('');
+
+  // interpretation — where to look
+  const w=IDEALS[widest];
+  const wl=L[widest], wt=T[widest], wg=wl-wt;
+  let interpMsg;
+  if(gap>=0.6){
+    interpMsg=`Start with <b>${w.n}</b> — your widest gap (you rated it ${wl}, your team ${wt}). That's where your <i>intent</i> and their <i>experience</i> diverge most, and it's the single highest-leverage place to close the distance. Remember: the gap isn't a verdict on you — it's a map. You can only fix an environment once you can see it the way your team lives it.`;
+  } else if(gap>-0.6){
+    interpMsg=`You're aligned, so the move is simple: raise the lowest-scoring Ideal you <i>both</i> named. ${w.n} shows the widest single gap, but overall you and your team are reading the room together — which is exactly the psychological safety that makes real improvement possible.`;
+  } else {
+    interpMsg=`Your team rates the environment higher than you rate yourself — a rare and healthy sign. Don't dismiss it as modesty; name what's working (your team clearly feels it) and keep doing it. If anything, your risk is not <i>believing</i> the good you're building.`;
+  }
+  $('interp').innerHTML=interpMsg;
+
+  $('form').classList.add('hide');
+  $('results').classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function edit(){ $('results').classList.add('hide'); $('form').classList.remove('hide'); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function copyBrief(){
+  const L=IDEALS.map(i=>val('L_'+i.k)), T=IDEALS.map(i=>val('T_'+i.k));
+  if(L.includes(null)||T.includes(null)){ return; }
+  const lAvg=L.reduce((a,b)=>a+b,0)/5, tAvg=T.reduce((a,b)=>a+b,0)/5, gap=lAvg-tAvg;
+  const lines=IDEALS.map((i,idx)=>`${i.n}: you ${L[idx]} / team ${T[idx]} (gap ${L[idx]-T[idx]>0?'+':''}${L[idx]-T[idx]})`).join('\n');
+  const brief=
+`ENVIRONMENT HEALTH ASSESSMENT — BRIEF
+Five Ideals, leader self-rating vs team rating (1-5):
+${lines}
+Leader average: ${lAvg.toFixed(1)} | Team average: ${tAvg.toFixed(1)} | GAP: ${gap>0?'+':''}${gap.toFixed(1)}
+Band: ${gap>1.0?'Transformation Illusion':(gap>=0.6?'Observer Effect':(gap>-0.6?'Aligned':'Understated'))}
+Ask: interpret this environment gap, name the highest-leverage Ideal to work on, and give me 3 concrete moves to close the gap between how I think I lead and how my team experiences it.`;
+  navigator.clipboard.writeText(brief).then(()=>{
+    $('copyBtn').textContent='Copied ✓';
+    setTimeout(()=>$('copyBtn').textContent='Copy brief for Claude ⧉',1800);
+  }).catch(()=>{ $('copyBtn').textContent='Copy failed — select manually'; });
+}
+
+function save(){ try{ const o={}; IDEALS.forEach(i=>{o['L_'+i.k]=$('L_'+i.k).value; o['T_'+i.k]=$('T_'+i.k).value;}); localStorage.setItem('eha',JSON.stringify(o)); }catch(e){} }
+function load(){ try{ const o=JSON.parse(localStorage.getItem('eha')||'{}'); Object.keys(o).forEach(k=>{ if($(k)&&o[k]!=='') $(k).value=o[k]; }); }catch(e){} }
+load();
+</script>
+</body>
+</html>
