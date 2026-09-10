@@ -15,7 +15,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 72px}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 72px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:36px 32px}
   .eyebrow{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px}
   h1{font-family:Georgia,serif;font-size:33px;line-height:1.15;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
@@ -32,21 +32,27 @@
 
   label.f{display:block;margin:14px 0 0;font-size:14px;font-weight:600;color:var(--ink)}
   .hint{font-weight:400;color:var(--muted);font-size:12.5px}
-  input[type=number]{font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:6px;background:#fff;color:var(--ink)}
-  input[type=number]:focus{outline:none;border-color:var(--accent)}
-  select{font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:6px;background:#fff;color:var(--ink)}
+  input[type=number],input[type=text],select{font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;width:100%;margin-top:6px;background:#fff;color:var(--ink)}
+  input:focus,select:focus{outline:none;border-color:var(--accent)}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .rate-out{margin-top:10px;font-size:13.5px;color:var(--ink-soft);background:#f4f8f6;border:1px solid #dcece5;border-radius:10px;padding:10px 12px}
   .rate-out b{color:var(--accent)}
-
-  .quad{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
-  .quad .qname{font-size:13px;font-weight:700}
-  .quad .qsub{font-size:11.5px;color:var(--muted);margin-top:1px}
-  .quad input{margin-top:8px}
   .sumline{margin-top:10px;font-size:13px;color:var(--muted)}
   .sumline b{color:var(--ink)}
   .sumline.bad b{color:var(--unp)}
+
+  /* task table */
+  .thead,.trow{display:grid;grid-template-columns:1fr 78px 1.15fr 1.15fr 30px;gap:8px;align-items:center}
+  .thead{margin-top:4px;padding:0 2px 6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .trow{margin-top:8px}
+  .trow input,.trow select{margin-top:0;padding:8px 9px;font-size:14px}
+  .trow .x{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0}
+  .trow .x:hover{color:var(--unp)}
+  .tadd{margin-top:12px}
+  .tadd button{appearance:none;border:1.5px dashed var(--line);background:#fbfaf7;color:var(--ink-soft);font-family:inherit;font-size:14px;font-weight:600;padding:10px 16px;border-radius:10px;cursor:pointer}
+  .tadd button:hover{border-color:var(--accent);color:var(--accent)}
+  .ttotals{margin-top:14px;font-size:13.5px;color:var(--ink-soft);background:#f4f8f6;border:1px solid #dcece5;border-radius:10px;padding:10px 12px}
+  .ttotals b{color:var(--accent)}
 
   .colbus{color:var(--bus)}.colint{color:var(--int)}.colops{color:var(--ops)}.colunp{color:var(--unp)}
   .coldel{color:var(--del)}.colrep{color:var(--rep)}.colinv{color:var(--inv)}.colperf{color:var(--perf)}
@@ -59,7 +65,6 @@
   .spacer{flex:1}
   .warn{color:var(--unp);font-size:13.5px;margin-top:12px;min-height:1px}
 
-  /* results */
   .hero{background:#12241d;color:#eaf3ef;border-radius:16px;padding:26px 24px;margin:4px 0 0}
   .hero .k{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:#8fb7a8;font-weight:700}
   .hero .big{font-family:Georgia,serif;font-size:52px;line-height:1;margin:10px 0 6px;color:#fff}
@@ -67,17 +72,26 @@
   .hero .say{font-size:15.5px;color:#cfe2da;margin:8px 0 0}
   .rlabel{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:30px 0 14px}
 
-  .gap{display:flex;align-items:stretch;gap:14px;flex-wrap:wrap}
-  .gapbox{flex:1;min-width:150px;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
-  .gapbox .t{font-size:12px;color:var(--muted);font-weight:600}
-  .gapbox .v{font-family:Georgia,serif;font-size:30px;margin-top:4px}
-  .gapbox .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .cmp-row{display:grid;grid-template-columns:130px 1fr 118px;gap:12px;align-items:center;margin:0 0 10px}
+  .cmp-row .name{font-size:13.5px;font-weight:600}
+  .cmp-row .twin{display:flex;height:22px;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#fff}
+  .cmp-row .est{background:repeating-linear-gradient(45deg,#e7ddce,#e7ddce 5px,#efe8db 5px,#efe8db 10px)}
+  .cmp-row .act{}
+  .cmp-row .fig{font-size:12.5px;color:var(--ink-soft);text-align:right;font-variant-numeric:tabular-nums}
+  .cmp-row .fig b{color:var(--ink)}
+  .cmp-legend{font-size:12px;color:var(--muted);margin:-4px 0 14px}
 
   .bar-row{display:flex;align-items:center;gap:14px;margin:0 0 11px}
   .bar-row .name{flex:none;width:120px;font-size:13.5px;font-weight:600}
   .bar-row .rail{flex:1;height:9px;background:#eee7db;border-radius:999px;overflow:hidden}
   .bar-row .val{display:block;height:100%;border-radius:999px}
-  .bar-row .pct{flex:none;width:44px;text-align:right;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .bar-row .pct{flex:none;width:92px;text-align:right;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+
+  .list{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .list .li{display:flex;justify-content:space-between;gap:12px;padding:11px 15px;border-top:1px solid var(--line);font-size:14px}
+  .list .li:first-child{border-top:0}
+  .list .li .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
+  .list .li .hh{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 
   .money{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
   .mbox{flex:1;min-width:170px;border-radius:12px;padding:16px 18px}
@@ -88,15 +102,29 @@
   .mbox .v{font-family:Georgia,serif;font-size:28px;margin-top:6px}
   .mbox .d{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
 
+  .upside{margin-top:16px;background:#12241d;color:#eaf3ef;border-radius:16px;padding:22px 24px}
+  .upside .t{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8fb7a8;font-weight:700}
+  .upside .v{font-family:Georgia,serif;font-size:40px;color:#fff;margin:8px 0 4px}
+  .upside .d{font-size:14px;color:#cfe2da}
+  .upside .assume{font-size:12.5px;color:#9fc3b6;margin-top:10px;border-top:1px solid #24443a;padding-top:10px}
+
   .callout{margin-top:26px;padding:18px 20px;border-radius:14px;background:#f7f4ef;border:1px solid var(--line);font-size:15.5px;color:var(--ink)}
   .callout b{color:var(--accent)}
   .hide{display:none}
-  @media (max-width:560px){
+  @media (max-width:600px){
     .card{padding:26px 18px}
     h1{font-size:27px}
-    .grid2,.grid4{grid-template-columns:1fr}
+    .grid2{grid-template-columns:1fr}
     .hero .big{font-size:42px}
-    .bar-row .name{width:96px;font-size:12.5px}
+    .thead{display:none}
+    .trow{grid-template-columns:1fr 30px;grid-auto-rows:auto;row-gap:6px}
+    .trow .tname{grid-column:1}
+    .trow .x{grid-column:2;grid-row:1;justify-self:end}
+    .trow .thrs{grid-column:1}
+    .trow .ttype{grid-column:1}
+    .trow .tdrip{grid-column:1}
+    .cmp-row{grid-template-columns:100px 1fr;gap:8px}
+    .cmp-row .fig{grid-column:1 / -1;text-align:left}
   }
 </style>
 </head>
@@ -106,12 +134,13 @@
 
     <!-- FORM -->
     <section id="form">
-      <p class="eyebrow">The Z Scale Assessment Series</p>
+      <p class="eyebrow">The Z-Scale Assessment Series</p>
       <h1>The Zealot Time Audit <span class="abbr">(ZTA)</span></h1>
-      <p class="sub">How much of your week actually lands on what matters — and how much capacity is hiding in plain sight.</p>
-      <p class="lede">Log a real week in 30-minute blocks first. Then bring the totals here. The ZTA stacks four lenses — the four types of work, the DRIP matrix, your Z Scale capacity, and flow efficiency — to show the honest number. Most people are shocked.</p>
+      <p class="sub">List the tasks you actually logged this week. Tag each one — the audit builds the honest picture, and shows how far it sits from what you'd have guessed.</p>
+      <p class="lede">Log a real week in 30-minute blocks first. Then enter the tasks below and tag each by its type of work and what to do with it (DRIP). The audit stacks four lenses — the four types of work, the DRIP matrix, your Z-Scale capacity, and flow efficiency — to reveal your true productive time, the capacity hiding in plain sight, and the revenue waiting on the other side of it.</p>
       <p class="byline">From <b>Raising the Dead: Converting Your Workforce from Zombies to Zealots</b> · by Jerry Peterson</p>
 
+      <!-- 1 -->
       <div class="sec">
         <h2>1 · You and your rate</h2>
         <p class="note">This puts real dollars on the time we're about to find.</p>
@@ -121,61 +150,57 @@
             <input type="number" id="income" placeholder="200000" oninput="rate()">
           </div>
           <div>
-            <label class="f">Hours you work in a typical week</label>
-            <input type="number" id="hours" value="45" oninput="rate()">
+            <label class="f">Your Z-Scale level <span class="hint">(from the ZTI)</span></label>
+            <select id="zti" onchange="rate()">
+              <option value="60">Level 1 — Zombie (60%)</option>
+              <option value="70">Level 2 — Zoner (70%)</option>
+              <option value="80">Level 3 — Zephyr (80%)</option>
+              <option value="90" selected>Level 4 — Zealot (90%)</option>
+              <option value="100">Level 5 — Zealot Leader (100%)</option>
+            </select>
           </div>
         </div>
-        <label class="f">Your Z Scale level <span class="hint">(from the ZTI — sets your capacity coefficient)</span></label>
-        <select id="zti" onchange="rate()">
-          <option value="60">Level 1 — Zombie (60%)</option>
-          <option value="70">Level 2 — Zoner (70%)</option>
-          <option value="80">Level 3 — Zephyr (80%)</option>
-          <option value="90" selected>Level 4 — Zealot (90%)</option>
-          <option value="100">Level 5 — Zealot Leader (100%)</option>
-        </select>
+        <label class="f">An hour of your best business-development work generates about this many times your cost rate in revenue
+          <span class="hint">— the honest knob on the revenue estimate. 1× is conservative; owners' value-creating hours are often worth 2–5×.</span></label>
+        <input type="number" id="valmult" value="3" step="0.5" min="1" oninput="rate()">
         <div class="rate-out" id="rateOut">Enter income to see your effective rate and Buyback Rate.</div>
       </div>
 
+      <!-- 2 -->
       <div class="sec">
-        <h2>2 · The four types of work — guess vs. truth</h2>
-        <p class="note">First, what you'd <i>estimate</i>. Then what the logged week actually showed. Each column should total 100%.</p>
+        <h2>2 · Your estimate — the gut check</h2>
+        <p class="note">Before you add up the tasks, guess how your week split across the four types of work. We'll hold this up against the truth. Total 100%.</p>
         <div class="grid2">
           <div>
-            <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">YOUR ESTIMATE</div>
-            <label class="f colbus">Business projects <span class="hint">value-creating</span></label><input type="number" id="eb" placeholder="%" oninput="sums()">
+            <label class="f colbus">Business projects <span class="hint">value-creating; customers pay for it</span></label><input type="number" id="eb" placeholder="%" oninput="sums()">
             <label class="f colint">Internal projects</label><input type="number" id="ei" placeholder="%" oninput="sums()">
-            <label class="f colops">Operational changes</label><input type="number" id="eo" placeholder="%" oninput="sums()">
-            <label class="f colunp">Unplanned / firefighting</label><input type="number" id="eu" placeholder="%" oninput="sums()">
-            <div class="sumline" id="estSum">Total: 0%</div>
           </div>
           <div>
-            <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">THE LOGGED WEEK</div>
-            <label class="f colbus">Business projects</label><input type="number" id="ab" placeholder="%" oninput="sums()">
-            <label class="f colint">Internal projects</label><input type="number" id="ai" placeholder="%" oninput="sums()">
-            <label class="f colops">Operational changes</label><input type="number" id="ao" placeholder="%" oninput="sums()">
-            <label class="f colunp">Unplanned / firefighting</label><input type="number" id="au" placeholder="%" oninput="sums()">
-            <div class="sumline" id="actSum">Total: 0%</div>
+            <label class="f colops">Operational changes</label><input type="number" id="eo" placeholder="%" oninput="sums()">
+            <label class="f colunp">Unplanned / firefighting</label><input type="number" id="eu" placeholder="%" oninput="sums()">
           </div>
         </div>
+        <div class="sumline" id="estSum">Total: 0%</div>
       </div>
 
+      <!-- 3 -->
       <div class="sec">
-        <h2>3 · The DRIP matrix — where the week really went</h2>
-        <p class="note">Split the logged week across the four quadrants. Invest + Perform is the work that matters; Delegate + Replace is what a leader should be buying back. Total 100%.</p>
-        <div class="grid4">
-          <div class="quad"><div class="qname coldel">Delegate</div><div class="qsub">low value, someone else can do</div><input type="number" id="dd" placeholder="%" oninput="sums()"></div>
-          <div class="quad"><div class="qname colrep">Replace</div><div class="qsub">low value, systematize away</div><input type="number" id="dr" placeholder="%" oninput="sums()"></div>
-          <div class="quad"><div class="qname colinv">Invest</div><div class="qsub">high value — grows the business</div><input type="number" id="di" placeholder="%" oninput="sums()"></div>
-          <div class="quad"><div class="qname colperf">Perform</div><div class="qsub">high value — only you can do it</div><input type="number" id="dp" placeholder="%" oninput="sums()"></div>
+        <h2>3 · Log your week — task by task</h2>
+        <p class="note">Enter each task you recorded, the hours it took, its type of work, and what should happen to it (DRIP). The grids fill themselves from this.</p>
+        <div class="thead">
+          <div>Task</div><div>Hours</div><div>Type of work</div><div>DRIP</div><div></div>
         </div>
-        <div class="sumline" id="dripSum">Total: 0%</div>
+        <div id="rows"></div>
+        <div class="tadd"><button type="button" onclick="addRow()">+ Add task</button></div>
+        <div class="ttotals" id="tTotals">No tasks logged yet.</div>
       </div>
 
+      <!-- 4 -->
       <div class="sec">
         <h2>4 · Flow efficiency</h2>
-        <p class="note">Of your working time, roughly how much is lost to waiting, queues, hand-offs, and delays? (Flow efficiency = the rest.)</p>
+        <p class="note">Of your working time, roughly how much is lost to waiting, queues, hand-offs, and delays?</p>
         <label class="f">Time lost to waiting / queues (%)</label>
-        <input type="number" id="wait" placeholder="50" oninput="rate()">
+        <input type="number" id="wait" placeholder="50" oninput="save()">
       </div>
 
       <div class="warn" id="warn"></div>
@@ -194,28 +219,35 @@
         <div class="say" id="heroSay"></div>
       </div>
 
-      <div class="rlabel">The perception gap — Business Projects</div>
-      <div class="gap">
-        <div class="gapbox"><div class="t">You estimated</div><div class="v colbus" id="gpEst">—</div><div class="d">of your week on value-creating work</div></div>
-        <div class="gapbox"><div class="t">The audit found</div><div class="v" id="gpAct">—</div><div class="d">what the logged week actually showed</div></div>
-        <div class="gapbox"><div class="t">The gap</div><div class="v" id="gpGap">—</div><div class="d" id="gpGapD">the story vs. the truth</div></div>
-      </div>
+      <div class="rlabel">Guess vs. truth — the four types of work</div>
+      <div class="cmp-legend">Striped = what you estimated · Solid = what the logged week actually showed.</div>
+      <div id="cmp"></div>
 
       <div class="rlabel">Where the week really went — DRIP</div>
       <div id="dripBars"></div>
 
+      <div class="rlabel">Your hand-off shopping list — the actual tasks to offload</div>
+      <div class="list" id="offloadList"></div>
+
       <div class="rlabel">The latent capacity, by three lenses</div>
-      <div class="gap">
-        <div class="gapbox"><div class="t">Offloadable work</div><div class="v" id="lcOff">—</div><div class="d">hrs/week on Delegate + Replace — buy it back</div></div>
-        <div class="gapbox"><div class="t">Capacity not brought</div><div class="v" id="lcCap">—</div><div class="d">hrs/week lost below full Z Scale</div></div>
-        <div class="gapbox"><div class="t">Lost to queues</div><div class="v" id="lcFlow">—</div><div class="d">hrs/week drowned in waiting</div></div>
+      <div class="money">
+        <div class="mbox buy"><div class="t">Offloadable work</div><div class="v" id="lcOff">—</div><div class="d">hrs/week on Delegate + Replace — buy it back</div></div>
+        <div class="mbox buy"><div class="t">Capacity not brought</div><div class="v" id="lcCap">—</div><div class="d">hrs/week lost below full Z-Scale</div></div>
+        <div class="mbox buy"><div class="t">Lost to queues</div><div class="v" id="lcFlow">—</div><div class="d">hrs/week drowned in waiting</div></div>
       </div>
 
-      <div class="rlabel">The dollars</div>
+      <div class="rlabel">The dollars — buying the time back</div>
       <div class="money">
         <div class="mbox cost"><div class="t">Costing you</div><div class="v" id="mCost">—</div><div class="d">a year to do buy-back-able work yourself, at your effective rate</div></div>
         <div class="mbox buy"><div class="t">Buy it back for</div><div class="v" id="mBuy">—</div><div class="d">a year at your Buyback Rate</div></div>
         <div class="mbox win"><div class="t">The arbitrage</div><div class="v" id="mWin">—</div><div class="d">freed for high-value work, at a fraction of the cost</div></div>
+      </div>
+
+      <div class="upside">
+        <div class="t">The upside — new revenue if you redirect those hours to business projects</div>
+        <div class="v" id="upVal">—</div>
+        <div class="d" id="upDesc">—</div>
+        <div class="assume" id="upAssume">—</div>
       </div>
 
       <div class="callout" id="doubleCallout"></div>
@@ -233,123 +265,165 @@
 <script>
 const $=id=>document.getElementById(id);
 const num=id=>parseFloat($(id).value)||0;
-
 function fmtMoney(n){return '$'+Math.round(n).toLocaleString();}
 
-function rate(){
-  const inc=num('income'), hrs=num('hours')||45;
-  const eff=inc/2000, buy=eff/4;
-  if(inc>0){
-    $('rateOut').innerHTML=`Effective rate <b>${fmtMoney(eff)}/hr</b> &nbsp;·&nbsp; Buyback Rate <b>${fmtMoney(buy)}/hr</b> — anything you can hand off below this, you should.`;
-  } else {
-    $('rateOut').textContent='Enter income to see your effective rate and Buyback Rate.';
-  }
+const TYPES=[['bus','Business projects','colbus','var(--bus)'],['int','Internal projects','colint','var(--int)'],['ops','Operational changes','colops','var(--ops)'],['unp','Unplanned / firefighting','colunp','var(--unp)']];
+const DRIPS=[['del','Delegate','coldel','var(--del)'],['rep','Replace','colrep','var(--rep)'],['inv','Invest','colinv','var(--inv)'],['perf','Perform','colperf','var(--perf)']];
+const DRIP_NAME={del:'Delegate',rep:'Replace',inv:'Invest',perf:'Perform'};
+const DRIP_COL={del:'var(--del)',rep:'var(--rep)',inv:'var(--inv)',perf:'var(--perf)'};
+
+let rid=0;
+function addRow(name='',hours='',type='',drip=''){
+  rid++;
+  const el=document.createElement('div'); el.className='trow'; el.dataset.id=rid;
+  const topt=TYPES.map(t=>`<option value="${t[0]}" ${type===t[0]?'selected':''}>${t[1]}</option>`).join('');
+  const dopt=DRIPS.map(d=>`<option value="${d[0]}" ${drip===d[0]?'selected':''}>${d[1]}</option>`).join('');
+  el.innerHTML=`
+    <input class="tname" type="text" placeholder="e.g. Chased overdue invoices" value="${name.replace(/"/g,'&quot;')}" oninput="tsum()">
+    <input class="thrs" type="number" placeholder="hrs" min="0" step="0.5" value="${hours}" oninput="tsum()">
+    <select class="ttype" onchange="tsum()"><option value="">Type…</option>${topt}</select>
+    <select class="tdrip" onchange="tsum()"><option value="">DRIP…</option>${dopt}</select>
+    <button class="x" type="button" title="remove" onclick="this.parentNode.remove();tsum()">×</button>`;
+  $('rows').appendChild(el);
+}
+function collect(){
+  return [...document.querySelectorAll('.trow')].map(r=>({
+    name:r.querySelector('.tname').value.trim(),
+    hours:parseFloat(r.querySelector('.thrs').value)||0,
+    type:r.querySelector('.ttype').value,
+    drip:r.querySelector('.tdrip').value
+  })).filter(t=>t.hours>0 || t.name);
+}
+function aggregate(tasks){
+  const byType={bus:0,int:0,ops:0,unp:0}, byDrip={del:0,rep:0,inv:0,perf:0};
+  let total=0;
+  tasks.forEach(t=>{ if(t.hours>0){ total+=t.hours; if(t.type)byType[t.type]+=t.hours; if(t.drip)byDrip[t.drip]+=t.hours; }});
+  return {byType,byDrip,total};
+}
+function tsum(){
+  const t=collect(), a=aggregate(t);
+  if(a.total>0){
+    const untagged=t.filter(x=>x.hours>0&&(!x.type||!x.drip)).length;
+    $('tTotals').innerHTML=`Logged: <b>${a.total.toFixed(1)} hrs</b> across ${t.filter(x=>x.hours>0).length} tasks.`+(untagged?` <span style="color:var(--unp)">${untagged} still need a Type and DRIP tag.</span>`:' Every task tagged. ✓');
+  } else { $('tTotals').textContent='No tasks logged yet.'; }
   save();
 }
-function groupSum(ids){return ids.reduce((a,id)=>a+num(id),0);}
+function rate(){
+  const inc=num('income'), eff=inc/2000, buy=eff/4;
+  if(inc>0){ $('rateOut').innerHTML=`Effective rate <b>${fmtMoney(eff)}/hr</b> &nbsp;·&nbsp; Buyback Rate <b>${fmtMoney(buy)}/hr</b> — anything you can hand off below this, you should.`; }
+  else { $('rateOut').textContent='Enter income to see your effective rate and Buyback Rate.'; }
+  save();
+}
 function sums(){
-  const e=groupSum(['eb','ei','eo','eu']);
-  const a=groupSum(['ab','ai','ao','au']);
-  const d=groupSum(['dd','dr','di','dp']);
-  $('estSum').innerHTML='Total: <b>'+e+'%</b>'; $('estSum').className='sumline'+(e!==100?' bad':'');
-  $('actSum').innerHTML='Total: <b>'+a+'%</b>'; $('actSum').className='sumline'+(a!==100?' bad':'');
-  $('dripSum').innerHTML='Total: <b>'+d+'%</b>'; $('dripSum').className='sumline'+(d!==100?' bad':'');
+  const e=['eb','ei','eo','eu'].reduce((a,id)=>a+num(id),0);
+  $('estSum').innerHTML='Estimate total: <b>'+e+'%</b>'; $('estSum').className='sumline'+(e!==100?' bad':'');
   save();
 }
 
 function run(){
-  const e=groupSum(['eb','ei','eo','eu']);
-  const a=groupSum(['ab','ai','ao','au']);
-  const d=groupSum(['dd','dr','di','dp']);
+  const tasks=collect(), a=aggregate(tasks);
+  const e=['eb','ei','eo','eu'].reduce((x,id)=>x+num(id),0);
+  const untagged=tasks.filter(t=>t.hours>0&&(!t.type||!t.drip)).length;
   const problems=[];
   if(num('income')<=0) problems.push('your annual income');
-  if(e!==100) problems.push('the Estimate column (must total 100%)');
-  if(a!==100) problems.push('the Logged Week column (must total 100%)');
-  if(d!==100) problems.push('the DRIP quadrants (must total 100%)');
+  if(e!==100) problems.push('the estimate (must total 100%)');
+  if(a.total<=0) problems.push('at least a few real tasks with hours');
+  if(untagged) problems.push(untagged+' task(s) still missing a Type or DRIP tag');
   if(problems.length){ $('warn').textContent='Please fix: '+problems.join('; ')+'.'; return; }
   $('warn').textContent='';
 
-  const hrs=num('hours')||45;
-  const cap=parseFloat($('zti').value)/100;
-  const flow=Math.max(0,(100-num('wait'))/100);
-  const matters=(num('di')+num('dp'))/100;
-  const offload=(num('dd')+num('dr'))/100;
+  const total=a.total, eff=num('income')/2000, buy=eff/4, cap=parseFloat($('zti').value)/100, flow=Math.max(0,(100-num('wait'))/100);
+  const pctType={}, actB=(a.byType.bus/total*100);
+  TYPES.forEach(t=>pctType[t[0]]=a.byType[t[0]]/total*100);
+  const matters=(a.byDrip.inv+a.byDrip.perf)/total, offload=(a.byDrip.del+a.byDrip.rep)/total;
   const shock=matters*cap*flow;
-  const eff=num('income')/2000, buy=eff/4;
 
-  // hero
   $('heroPct').innerHTML=Math.round(shock*100)+'<small>% of your week</small>';
-  $('heroSay').textContent=`That's about ${(shock*hrs).toFixed(1)} of your ${hrs} hours — high-value work, done at capacity, actually flowing. Everything else is recoverable.`;
+  $('heroSay').textContent=`That's about ${(shock*total).toFixed(1)} of your ${total.toFixed(1)} logged hours — high-value work, done at capacity, actually flowing. Everything else is recoverable.`;
 
-  // perception gap
-  const est=num('eb'), act=num('ab'), gap=act-est;
-  $('gpEst').textContent=est+'%';
-  $('gpAct').textContent=act+'%';
-  $('gpGap').textContent=(gap>0?'+':'')+gap+' pts';
-  $('gpGap').className='v '+(gap<0?'colunp':'colbus');
-  $('gpGapD').textContent = gap<0 ? 'you overestimated your value-creating time' : (gap>0?'you underestimated it':'right on the money');
+  // guess vs truth — all four types
+  const est={bus:num('eb'),int:num('ei'),ops:num('eo'),unp:num('eu')};
+  $('cmp').innerHTML=TYPES.map(t=>{
+    const es=est[t[0]], ac=pctType[t[0]], g=Math.round(ac-es);
+    const gtxt=(g>0?'+':'')+g+' pts';
+    return `<div class="cmp-row"><div class="name ${t[2]}">${t[1]}</div>
+      <div class="twin"><span class="est" style="width:${es}%"></span><span class="act" style="width:${Math.round(ac)}%;background:${t[3]}"></span></div>
+      <div class="fig">est <b>${es}%</b> · actual <b>${Math.round(ac)}%</b> <span style="color:var(--muted)">(${gtxt})</span></div></div>`;
+  }).join('');
 
-  // drip bars
-  const drip=[
-    {n:'Delegate',v:num('dd'),c:'var(--del)'},
-    {n:'Replace', v:num('dr'),c:'var(--rep)'},
-    {n:'Invest',  v:num('di'),c:'var(--inv)'},
-    {n:'Perform', v:num('dp'),c:'var(--perf)'}
-  ];
-  $('dripBars').innerHTML=drip.map(x=>
-    `<div class="bar-row"><span class="name">${x.n}</span><span class="rail"><span class="val" style="width:${x.v}%;background:${x.c}"></span></span><span class="pct">${x.v}%</span></div>`
-  ).join('');
+  // DRIP bars
+  $('dripBars').innerHTML=DRIPS.map(d=>{
+    const v=Math.round(a.byDrip[d[0]]/total*100), h=a.byDrip[d[0]];
+    return `<div class="bar-row"><span class="name ${d[2]}">${d[1]}</span><span class="rail"><span class="val" style="width:${v}%;background:${d[3]}"></span></span><span class="pct">${v}% · ${h.toFixed(1)}h</span></div>`;
+  }).join('');
+
+  // offload shopping list
+  const off=tasks.filter(t=>t.hours>0&&(t.drip==='del'||t.drip==='rep')).sort((x,y)=>y.hours-x.hours);
+  $('offloadList').innerHTML = off.length ? off.map(t=>
+    `<div class="li"><span><span class="tag" style="background:${DRIP_COL[t.drip]}22;color:${DRIP_COL[t.drip]}">${DRIP_NAME[t.drip]}</span> &nbsp;${t.name||'(untitled task)'}</span><span class="hh">${t.hours.toFixed(1)} hrs/wk</span></div>`
+  ).join('') : '<div class="li"><span>Nothing tagged Delegate or Replace — either you\'re already lean, or look harder. 🙂</span></div>';
 
   // latent capacity
-  const offHrs=offload*hrs, capHrs=hrs*(1-cap), flowHrs=hrs*(1-flow);
+  const offHrs=(a.byDrip.del+a.byDrip.rep), capHrs=total*(1-cap), flowHrs=total*(1-flow);
   $('lcOff').textContent=offHrs.toFixed(1)+' hrs';
   $('lcCap').textContent=capHrs.toFixed(1)+' hrs';
   $('lcFlow').textContent=flowHrs.toFixed(1)+' hrs';
 
-  // money (50 working weeks/yr)
-  const wk=50;
-  const cost=offHrs*eff*wk, buyCost=offHrs*buy*wk, win=cost-buyCost;
-  $('mCost').textContent=fmtMoney(cost);
-  $('mBuy').textContent=fmtMoney(buyCost);
-  $('mWin').textContent=fmtMoney(win);
+  // dollars (50 wks)
+  const wk=50, cost=offHrs*eff*wk, buyCost=offHrs*buy*wk, win=cost-buyCost;
+  $('mCost').textContent=fmtMoney(cost); $('mBuy').textContent=fmtMoney(buyCost); $('mWin').textContent=fmtMoney(win);
+
+  // revenue upside — reclaimed hours redirected to business projects
+  const mult=Math.max(1,num('valmult')||1);
+  const reclaimedYr=offHrs*wk;
+  const uplift=reclaimedYr*eff*mult;
+  $('upVal').textContent=fmtMoney(uplift)+' / year';
+  $('upDesc').textContent=`Move the ${offHrs.toFixed(1)} hrs/week you tagged Delegate + Replace into business-development work — ${Math.round(reclaimedYr)} hours a year pointed at what customers actually pay for.`;
+  $('upAssume').textContent=`Assumes each reclaimed hour generates ${mult}× your $${Math.round(eff).toLocaleString()}/hr cost rate in revenue. Change the multiple in step 1 to match your reality — this is an estimate, not a promise.`;
 
   // doubling framing
-  const newMatters=Math.min(1, matters+offload); // if offloadable time were redirected to high-value work
-  const mult = matters>0 ? (newMatters/matters) : 0;
-  $('doubleCallout').innerHTML=
-    `Redirect the <b>${offHrs.toFixed(1)} hrs/week</b> of buy-back-able work into Invest and Perform and your time on what matters goes from <b>${Math.round(matters*100)}%</b> to <b>${Math.round(newMatters*100)}%</b> of the week — a <b>${mult.toFixed(1)}×</b> jump, with no new hire and nothing bought. That's the HP move: HP multiplied engineers' time on new value 8× the same way — by clearing waste, not adding people.`;
+  const newMatters=Math.min(1, matters+offload);
+  const m = matters>0 ? (newMatters/matters) : 0;
+  $('doubleCallout').innerHTML=`Redirect the <b>${offHrs.toFixed(1)} hrs/week</b> of buy-back-able work into Invest and Perform and your time on what matters goes from <b>${Math.round(matters*100)}%</b> to <b>${Math.round(newMatters*100)}%</b> of the week — a <b>${m.toFixed(1)}×</b> jump, with no new hire and nothing bought.`;
 
-  $('form').classList.add('hide');
-  $('results').classList.remove('hide');
+  $('form').classList.add('hide'); $('results').classList.remove('hide');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function edit(){ $('results').classList.add('hide'); $('form').classList.remove('hide'); window.scrollTo({top:0,behavior:'smooth'}); }
 
 function copyBrief(){
-  const hrs=num('hours')||45, cap=parseFloat($('zti').value), flow=100-num('wait');
-  const matters=num('di')+num('dp'), offload=num('dd')+num('dr');
-  const shock=Math.round((matters/100)*(cap/100)*(flow/100)*100);
-  const eff=num('income')/2000;
+  const tasks=collect(), a=aggregate(tasks), total=a.total||1;
+  const eff=num('income')/2000, cap=parseFloat($('zti').value), flow=100-num('wait');
+  const p=k=>Math.round(a.byType[k]/total*100), d=k=>Math.round(a.byDrip[k]/total*100);
+  const matters=d('inv')+d('perf'), offHrs=(a.byDrip.del+a.byDrip.rep), mult=Math.max(1,num('valmult')||1);
   const brief=
 `ZEALOT TIME AUDIT — BRIEF
-Income: ${fmtMoney(num('income'))} | Effective rate: ${fmtMoney(eff)}/hr | Buyback: ${fmtMoney(eff/4)}/hr
-Weekly hours: ${hrs} | Z Scale capacity: ${cap}% | Flow efficiency: ${flow}%
-4 Types estimate vs actual — Business ${num('eb')}%→${num('ab')}%, Internal ${num('ei')}%→${num('ai')}%, Operational ${num('eo')}%→${num('ao')}%, Unplanned ${num('eu')}%→${num('au')}%
-DRIP — Delegate ${num('dd')}%, Replace ${num('dr')}%, Invest ${num('di')}%, Perform ${num('dp')}%
-Time on what matters (Invest+Perform): ${matters}%  |  Offloadable (Delegate+Replace): ${offload}%
-TRUE productive time on what matters: ${shock}% of the week
-Ask: build a plan to at least double capacity without hiring or buying anything.`;
-  navigator.clipboard.writeText(brief).then(()=>{
-    $('copyBtn').textContent='Copied ✓';
-    setTimeout(()=>$('copyBtn').textContent='Copy brief for Claude ⧉',1800);
-  }).catch(()=>{ $('copyBtn').textContent='Copy failed — select manually'; });
+Income ${fmtMoney(num('income'))} | Effective rate ${fmtMoney(eff)}/hr | Buyback ${fmtMoney(eff/4)}/hr | Z-Scale ${cap}% | Flow ${flow}%
+Logged ${total.toFixed(1)} hrs across ${tasks.filter(t=>t.hours>0).length} tasks
+4 Types estimate vs actual — Business ${num('eb')}%→${p('bus')}%, Internal ${num('ei')}%→${p('int')}%, Operational ${num('eo')}%→${p('ops')}%, Unplanned ${num('eu')}%→${p('unp')}%
+DRIP actual — Delegate ${d('del')}%, Replace ${d('rep')}%, Invest ${d('inv')}%, Perform ${d('perf')}%
+Offloadable (Delegate+Replace): ${offHrs.toFixed(1)} hrs/wk | Time on what matters: ${matters}%
+Revenue upside if redirected to business projects: ${fmtMoney(offHrs*50*eff*mult)}/yr (at ${mult}x cost rate)
+Ask: build a plan to reclaim the offloadable hours and redirect them to business development.`;
+  navigator.clipboard.writeText(brief).then(()=>{ $('copyBtn').textContent='Copied ✓'; setTimeout(()=>$('copyBtn').textContent='Copy brief for Claude ⧉',1800); }).catch(()=>{ $('copyBtn').textContent='Copy failed — select manually'; });
 }
 
-// lightweight autosave (works in a standalone file; harmless if blocked)
-const FIELDS=['income','hours','zti','eb','ei','eo','eu','ab','ai','ao','au','dd','dr','di','dp','wait'];
-function save(){ try{ const o={}; FIELDS.forEach(f=>o[f]=$(f).value); localStorage.setItem('zta',JSON.stringify(o)); }catch(e){} }
-function load(){ try{ const o=JSON.parse(localStorage.getItem('zta')||'{}'); FIELDS.forEach(f=>{ if(o[f]!==undefined&&o[f]!=='') $(f).value=o[f]; }); }catch(e){} }
-load(); rate(); sums();
+// autosave
+function save(){ try{
+  const o={income:$('income').value,zti:$('zti').value,valmult:$('valmult').value,wait:$('wait').value,
+    eb:$('eb').value,ei:$('ei').value,eo:$('eo').value,eu:$('eu').value,
+    tasks:collect()};
+  localStorage.setItem('zta2',JSON.stringify(o));
+}catch(e){} }
+function load(){ try{
+  const o=JSON.parse(localStorage.getItem('zta2')||'{}');
+  ['income','zti','valmult','wait','eb','ei','eo','eu'].forEach(f=>{ if(o[f]!==undefined&&o[f]!=='') $(f).value=o[f]; });
+  if(o.tasks&&o.tasks.length){ o.tasks.forEach(t=>addRow(t.name,t.hours,t.type,t.drip)); }
+}catch(e){} }
+
+load();
+if(!document.querySelector('.trow')){ addRow('','', '',''); addRow(); addRow(); }
+rate(); sums(); tsum();
 </script>
 </body>
 </html>
