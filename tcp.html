@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>True Capacity — Honest Load vs. Capacity Planner</title>
+<style>
+:root{
+  --teal:#0E3A34; --teal2:#12564A; --accent:#1E7F55; --accent2:#3AD18F;
+  --ink:#1F2B27; --muted:#6A7A73; --line:#D8E4DE; --bg:#F4F8F6; --card:#FFFFFF;
+  --gold:#B8860B; --amber:#B9761F; --soft:#EAF3EE; --softline:#BFE0CE;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Calibri,Arial,sans-serif;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:28px 18px 80px}
+header h1{font-size:27px;margin:0 0 4px;color:var(--teal);letter-spacing:-.3px}
+header .sub{color:var(--muted);font-size:15px;margin:0 0 6px}
+.lede{background:var(--soft);border:1px solid var(--softline);border-radius:12px;padding:14px 16px;margin:16px 0 22px;font-size:14.5px;color:#28453b}
+.lede b{color:var(--teal)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;margin:16px 0;box-shadow:0 1px 2px rgba(14,58,52,.04)}
+.card h2{font-size:16px;margin:0 0 3px;color:var(--teal)}
+.card h2 .n{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;background:var(--accent);color:#fff;border-radius:50%;font-size:13px;margin-right:9px;vertical-align:2px}
+.card .hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.field{flex:1 1 150px;min-width:130px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.field .u{color:var(--muted);font-weight:400}
+input[type=number]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:15px;color:var(--ink);background:#fff}
+input[type=number]:focus{outline:none;border-color:var(--accent)}
+.slider{margin:15px 0 6px}
+.slider .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:2px}
+.slider .top .lab{font-weight:600}
+.slider .top .val{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+.slider .desc{font-size:12px;color:var(--muted);margin:0 0 6px}
+.slider .hrs{font-size:11.5px;color:var(--amber);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);height:22px}
+.eng{display:flex;gap:12px;flex-wrap:wrap}
+.eng .field{flex:1 1 120px}
+.coef{font-size:12.5px;color:var(--muted);margin-top:10px}
+.coef b{color:var(--teal)}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0 4px}
+button.go{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:15px;font-weight:700;cursor:pointer}
+button.go:hover{background:var(--teal2)}
+button.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:11px 16px;font-size:13px;cursor:pointer}
+button.ghost:hover{border-color:var(--accent);color:var(--accent)}
+#results{display:none}
+.headline{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;border-radius:16px;padding:24px 22px;margin:8px 0 18px}
+.headline .k{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent2);font-weight:700}
+.headline .big{font-size:44px;font-weight:800;line-height:1.05;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.headline .big small{font-size:20px;font-weight:600;opacity:.8}
+.headline .note{font-size:14px;color:#cfe6da;margin-top:6px}
+.band{margin:14px 0 2px}
+.band .track{position:relative;height:34px;background:#e3ede8;border-radius:8px;overflow:hidden}
+.band .seg{position:absolute;top:0;bottom:0;font-size:10.5px;color:#5b6b64;display:flex;align-items:center;justify-content:center;text-align:center}
+.band .you{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--gold)}
+.band .youlab{position:absolute;transform:translateX(-50%);font-size:11px;color:var(--gold);font-weight:700;white-space:nowrap;margin-top:-2px}
+.band .cap{font-size:11.5px;color:var(--muted);margin-top:24px}
+.wf{margin:6px 0}
+.wf .b{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.wf .b .barwrap{flex:1;background:#eef4f1;border-radius:6px;height:20px;position:relative;overflow:hidden}
+.wf .b .bar{height:100%;border-radius:6px}
+.wf .b .lb{flex:0 0 168px;color:var(--ink)}
+.wf .b .amt{flex:0 0 92px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.plan{border-radius:12px;padding:16px 18px;margin:16px 0;font-size:14.5px}
+.plan.over{background:#FBF1E4;border:1px solid #E7CBA0}
+.plan.under{background:var(--soft);border:1px solid var(--softline)}
+.plan.crit{background:#F7E4E1;border:1px solid #E2B3AA}
+.plan .t{font-weight:700;margin-bottom:4px}
+.plan.over .t{color:var(--amber)}
+.plan.under .t{color:var(--accent)}
+.plan.crit .t{color:#A6432E}
+.climb{background:#fff;border:1.5px solid var(--softline);border-radius:14px;padding:18px 20px;margin:16px 0}
+.climb h3{margin:0 0 4px;color:var(--teal);font-size:16px}
+.climb .lc{font-size:13px;color:var(--muted);margin:0 0 12px}
+.climb .item{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.climb .item:last-of-type{border-bottom:none}
+.climb .item .g{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+.climb .tot{display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:var(--teal);margin-top:12px;padding-top:10px;border-top:2px solid var(--soft)}
+.flow{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+.flow .fbox{flex:1 1 200px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.flow .fbox .fk{font-size:12px;color:var(--muted)}
+.flow .fbox .fv{font-size:26px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums}
+.flow .fbox .fd{font-size:12px;color:var(--muted);margin-top:3px}
+.closing{font-size:14px;color:#28453b;background:var(--soft);border-radius:12px;padding:15px 17px;margin:16px 0 0}
+.foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:26px}
+.assum{font-size:11.5px;color:var(--muted);margin-top:8px;border-left:2px solid var(--line);padding-left:10px}
+@media(max-width:560px){.headline .big{font-size:34px}.wf .b .lb{flex-basis:110px}.wf .b .amt{flex-basis:64px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>True Capacity</h1>
+  <p class="sub">An honest look at load vs. capacity — before the plan, not after the miss.</p>
+</header>
+
+<div class="lede">
+  This is <b>not a productivity score</b>. It's a look at how much value-delivering work your team can realistically produce in a given window — and, more importantly, <b>how much capacity is hiding in plain sight, waiting to be reclaimed.</b> Every number below is yours to change. The point isn't the floor. It's the climb — and the line you shouldn't cross to reach it.
+</div>
+
+<!-- 1. TEAM -->
+<div class="card">
+  <h2><span class="n">1</span>Your team &amp; window</h2>
+  <p class="hint">Start with the raw, on-paper number — the one your current plan is probably built on.</p>
+  <div class="row">
+    <div class="field"><label>People on the team</label><input type="number" id="people" value="10" min="1" step="1"></div>
+    <div class="field"><label>Hours / week each <span class="u">(paid)</span></label><input type="number" id="hours" value="40" min="1" step="1"></div>
+    <div class="field"><label>Planning window <span class="u">(weeks)</span></label><input type="number" id="weeks" value="13" min="1" step="1"></div>
+  </div>
+  <p class="assum" id="grossline"></p>
+</div>
+
+<!-- 2. WHERE HOURS GO -->
+<div class="card">
+  <h2><span class="n">2</span>Where the hours actually go</h2>
+  <p class="hint">Not waste — mostly legitimate, necessary, invisible. The plan just never subtracted it. Drag each to your reality; the defaults are honest starting points, applied in sequence.</p>
+
+  <div class="slider">
+    <div class="top"><span class="lab">Time off — PTO, holidays, sick, leave</span><span class="val"><span id="offV">12</span>%</span></div>
+    <div class="desc">Nobody is on the clock 52 weeks a year.</div>
+    <input type="range" id="off" min="0" max="35" value="12">
+    <div class="hrs" id="offH"></div>
+  </div>
+
+  <div class="slider">
+    <div class="top"><span class="lab">Admin, email &amp; the general overhead of having a job</span><span class="val"><span id="admV">10</span>%</span></div>
+    <div class="desc">Real, recurring, and rarely counted as load.</div>
+    <input type="range" id="adm" min="0" max="35" value="10">
+    <div class="hrs" id="admH"></div>
+  </div>
+
+  <div class="slider">
+    <div class="top"><span class="lab">Meetings &amp; coordination <span class="u">(incl. status prep)</span></span><span class="val"><span id="mtgV">20</span>%</span></div>
+    <div class="desc">The most reclaimable bucket in the whole model. Hold this number in mind.</div>
+    <input type="range" id="mtg" min="0" max="45" value="20">
+    <div class="hrs" id="mtgH"></div>
+  </div>
+
+  <div class="slider">
+    <div class="top"><span class="lab">Unplanned work &amp; firefighting</span><span class="val"><span id="unpV">15</span>%</span></div>
+    <div class="desc">Capacity you can't plan against — so it has to be reserved out, not booked over.</div>
+    <input type="range" id="unp" min="0" max="45" value="15">
+    <div class="hrs" id="unpH"></div>
+  </div>
+
+  <div class="slider">
+    <div class="top"><span class="lab">Extraneous load — concurrent priorities &amp; interruptions per person</span><span class="val"><span id="cxV">3</span></span></div>
+    <div class="desc">The <em>reclaimable</em> kind of cognitive load: context-switching and interruptions imposed by how work is organized. 1 = fully focused. (The two kinds you can't reclaim are in the next step.)</div>
+    <input type="range" id="cx" min="1" max="6" value="3" step="1">
+    <div class="hrs" id="cxH"></div>
+  </div>
+</div>
+
+<!-- 2b. COGNITIVE LOAD -->
+<div class="card">
+  <h2><span class="n">2b</span>Cognitive load — the nature of the work</h2>
+  <p class="hint">Two kinds of load come from the work itself, not the worker: <b>intrinsic</b> (how inherently complex the task is) and <b>germane</b> (how much new learning it demands). Both lower finished output per hour, both are outside any individual's control — and unlike the extraneous load above, you <em>cannot</em> reclaim them by fixing process. They're the floor the work sets.</p>
+  <div class="row">
+    <div class="field"><label>Intrinsic complexity <span class="u">(inherent difficulty)</span></label>
+      <select id="ci" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:15px;background:#fff;color:var(--ink)"><option value="0">Routine / well-understood</option><option value="1" selected>Moderate</option><option value="2">Complex</option><option value="3">Very complex / research-like</option></select></div>
+    <div class="field"><label>Germane load <span class="u">(new learning the work demands)</span></label>
+      <select id="cg" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:15px;background:#fff;color:var(--ink)"><option value="0" selected>Established skills</option><option value="1">Some new ground</option><option value="2">Steep learning curve</option></select></div>
+  </div>
+  <p class="coef" id="clfline"></p>
+</div>
+
+<!-- 3. ENGAGEMENT -->
+<div class="card">
+  <h2><span class="n">3</span>How alive is the work</h2>
+  <p class="hint">The hours that remain aren't all equal. An engaged person and a checked-out one deliver very different value in the same hour. This is the human multiplier pure planning ignores. Defaults are Gallup's global reality — change them to your team.</p>
+  <div class="eng">
+    <div class="field"><label>% Engaged <span class="u">(zealots)</span></label><input type="number" id="e1" value="30" min="0" max="100" step="1"></div>
+    <div class="field"><label>% Not engaged <span class="u">(going through motions)</span></label><input type="number" id="e2" value="52" min="0" max="100" step="1"></div>
+    <div class="field"><label>% Actively disengaged</label><input type="number" id="e3" value="18" min="0" max="100" step="1"></div>
+  </div>
+  <p class="coef" id="coefline"></p>
+</div>
+
+<!-- 4. PLAN -->
+<div class="card">
+  <h2><span class="n">4</span>What you've committed</h2>
+  <p class="hint">How much of the raw, on-paper capacity has this team already been committed to deliver this window? Most plans commit 85–100% of the paper number — and then reality adds more after the plan is "fixed."</p>
+  <div class="row">
+    <div class="field"><label>Committed load <span class="u">(% of on-paper capacity)</span></label><input type="number" id="load" value="90" min="0" max="150" step="1"></div>
+    <div class="field"><label>Shoulder-taps <span class="u">(% scope added off-plan)</span></label><input type="number" id="stap" value="10" min="0" max="60" step="1"></div>
+  </div>
+  <p class="assum">The <b>shoulder-tap</b> is the manager who walks past the plan to their favorite developer with an off-sprint "quick favor." It's the expediter position in an Agile sprint — it injects scope the plan never held <em>and</em> forces context-switching, so it costs more than its raw hours. Enter roughly how much extra scope arrives this way after the window is supposedly locked.</p>
+</div>
+
+<div class="btnrow">
+  <button class="go" id="run">Show my honest capacity</button>
+  <button class="ghost" id="reset">Reset to defaults</button>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="headline">
+    <div class="k">Sustainable delivery capacity</div>
+    <div class="big"><span id="effPct">0</span><small>% of on-paper</small></div>
+    <div class="note" id="effHrs"></div>
+  </div>
+
+  <div class="card">
+    <h2>Where you stand — in context</h2>
+    <p class="hint">This is not uniquely yours. Honest teams land here. It's normal — and it's the opportunity.</p>
+    <div class="band">
+      <div class="track" id="track"></div>
+      <div class="cap">Typical honest range is roughly 25–40% of paper capacity. Few organizations ever measure this at all — which is exactly why the hours go missing.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Where the hours went</h2>
+    <p class="hint">The low number isn't a verdict on your people. It's a map of a system quietly taxing them. Here's the whole path from paper to delivered.</p>
+    <div class="wf" id="waterfall"></div>
+  </div>
+
+  <div id="planbox"></div>
+
+  <div id="sustainbox"></div>
+
+  <div class="climb">
+    <h3>The climb — capacity you can reclaim</h3>
+    <p class="lc">None of this asks your people to work harder. It asks the system to stop taxing them. Here's what comes back from the changes you actually control.</p>
+    <div id="climbitems"></div>
+    <div class="tot"><span>Realistic reclaimed capacity</span><span id="climbTot"></span></div>
+    <div class="tot" style="border-top:none;padding-top:2px"><span style="font-weight:600;color:var(--muted);font-size:13px">Sustainable capacity after the climb</span><span id="climbAfter" style="color:var(--accent)"></span></div>
+  </div>
+
+  <div class="card">
+    <h2>And why work still feels slow — the flow lens</h2>
+    <p class="hint">Capacity is how much your people can do. Flow is whether the work is moving. These are different problems — a busy team and a stalled one look identical from a status deck.</p>
+    <div class="flow">
+      <div class="fbox"><div class="fk">Flow efficiency</div><div class="fv"><span id="flowPct">15</span>%</div><div class="fd">Share of a task's life spent being worked, vs. waiting in a queue. Typical knowledge work: 5–15%.</div></div>
+      <div class="fbox"><div class="fk">What that means</div><div class="fv" style="font-size:15px;font-weight:600;line-height:1.35" id="flowMsg"></div></div>
+    </div>
+    <div class="slider" style="margin-top:14px">
+      <div class="top"><span class="lab">Estimate your flow efficiency</span><span class="val"><span id="flV">15</span>%</span></div>
+      <div class="desc">Roughly: if a two-day task takes two weeks to clear the board, that's ~20%.</div>
+      <input type="range" id="fl" min="2" max="60" value="15">
+    </div>
+  </div>
+
+  <div class="closing" id="closing"></div>
+</div>
+
+<p class="foot">True Capacity · a planning mirror, not a scorecard · jerrypeterson.ai — Raising the Dead</p>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var KEY="truecap_v2";
+  var ids=["people","hours","weeks","off","adm","mtg","unp","cx","ci","cg","e1","e2","e3","load","stap","fl"];
+
+  function load(){
+    try{var s=JSON.parse(localStorage.getItem(KEY)||"{}");
+      ids.forEach(function(k){if(s[k]!==undefined && $(k))$(k).value=s[k];});
+    }catch(e){}
+  }
+  function save(){
+    try{var o={};ids.forEach(function(k){if($(k))o[k]=$(k).value;});
+      localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}
+  }
+  function num(id){var v=parseFloat($(id).value);return isNaN(v)?0:v;}
+
+  var CO_ENG=1.0, CO_NOT=0.6, CO_DIS=0.25;
+  var SURGE=1.35;   // how far above sustainable heroics can briefly reach
+  var SWITCH=1.3;   // shoulder-tap hours cost more: scope + context-switching, aimed at the constraint
+
+  function coef(){
+    var a=num("e1"),b=num("e2"),c=num("e3");var t=a+b+c;
+    if(t<=0)return {c:0,t:0};
+    return {c:(a*CO_ENG+b*CO_NOT+c*CO_DIS)/t, t:t};
+  }
+  function focusPenalty(){var n=num("cx");return Math.min(0.40,(n-1)*0.10);}
+  var INTR=[1.0,0.92,0.82,0.72], GERM=[1.0,0.92,0.82];
+  function clfWork(){return INTR[Math.min(3,Math.max(0,parseInt($("ci").value)||0))]*GERM[Math.min(2,Math.max(0,parseInt($("cg").value)||0))];}
+
+  function calcRemainAfterOverhead(){
+    var off=num("off")/100, adm=num("adm")/100, mtg=num("mtg")/100, unp=num("unp")/100, fp=focusPenalty();
+    return (1-off)*(1-adm)*(1-mtg)*(1-unp)*(1-fp);
+  }
+  function fmtH(h){return Math.round(h).toLocaleString()+" hrs";}
+
+  function liveBits(){
+    var gross=num("people")*num("hours")*num("weeks");
+    $("grossline").textContent="On-paper capacity: "+num("people")+" × "+num("hours")+" hrs × "+num("weeks")+" wks = "+gross.toLocaleString()+" hours. That's the number most plans quietly treat as deliverable.";
+    var r=1;
+    var off=num("off")/100; $("offV").textContent=num("off"); $("offH").textContent="− "+fmtH(gross*r*off); r*=(1-off);
+    var adm=num("adm")/100; $("admV").textContent=num("adm"); $("admH").textContent="− "+fmtH(gross*r*adm); r*=(1-adm);
+    var mtg=num("mtg")/100; $("mtgV").textContent=num("mtg"); $("mtgH").textContent="− "+fmtH(gross*r*mtg); r*=(1-mtg);
+    var unp=num("unp")/100; $("unpV").textContent=num("unp"); $("unpH").textContent="− "+fmtH(gross*r*unp); r*=(1-unp);
+    var fp=focusPenalty(); $("cxV").textContent=num("cx"); $("cxH").textContent=(num("cx")<=1?"fully focused — no switching tax":"− "+fmtH(gross*r*fp)+"  ("+Math.round(fp*100)+"% switching tax)");
+    var cf=coef();
+    $("coefline").innerHTML="Weighted engagement multiplier: <b>"+cf.c.toFixed(2)+"×</b>"+(Math.abs(cf.t-100)>0.5?'  <span style="color:var(--amber)">(your three numbers total '+cf.t+'%, not 100% — they\'ll be normalized)</span>':'')+". Engaged 1.0× · not engaged 0.6× · actively disengaged 0.25×.";
+    $("clfline").innerHTML="Cognitive-load factor: <b>"+clfWork().toFixed(2)+"×</b> — the work's own drag on output per hour (intrinsic × germane). This is a floor set by the work and the skill gap, not the worker, and it can't be reclaimed by fixing process.";
+    $("flV").textContent=$("fl").value; $("flowPct").textContent=$("fl").value;
+    save();
+  }
+
+  function run(){
+    var gross=num("people")*num("hours")*num("weeks");
+    var afterOH=calcRemainAfterOverhead();
+    var cf=coef();
+    var clfW=clfWork();
+    var eff=afterOH*cf.c*clfW;
+    var effHrs=gross*eff;
+    var effPct=eff*100;
+
+    $("effPct").textContent=effPct.toFixed(0);
+    $("effHrs").textContent="≈ "+fmtH(effHrs)+" you can deliver week after week — sustainably, without borrowing against your people — out of "+gross.toLocaleString()+" on paper.";
+
+    // context band
+    var scaleMax=60;
+    var track=$("track"); track.innerHTML="";
+    [["#f0d9d9",0,25,"lean"],["#e3ede8",25,40,"honest range"],["#d7ebe0",40,scaleMax,"strong flow"]].forEach(function(s){
+      var d=document.createElement("div");d.className="seg";
+      d.style.left=(s[1]/scaleMax*100)+"%";d.style.width=((s[2]-s[1])/scaleMax*100)+"%";
+      d.style.background=s[0];d.textContent=s[3];track.appendChild(d);
+    });
+    var youPos=Math.min(100,effPct/scaleMax*100);
+    var you=document.createElement("div");you.className="you";you.style.left=youPos+"%";track.appendChild(you);
+    var yl=document.createElement("div");yl.className="youlab";yl.style.left=youPos+"%";yl.textContent="you · "+effPct.toFixed(0)+"%";track.appendChild(yl);
+
+    // waterfall
+    var wf=$("waterfall");wf.innerHTML="";
+    function bar(lab,frac,color,amt){
+      var b=document.createElement("div");b.className="b";
+      b.innerHTML='<div class="lb">'+lab+'</div><div class="barwrap"><div class="bar" style="width:'+(Math.max(2,frac*100))+'%;background:'+color+'"></div></div><div class="amt">'+amt+'</div>';
+      wf.appendChild(b);
+    }
+    bar("On paper",1,"#12564A",fmtH(gross));
+    var r=1;
+    [["Time off",num("off")/100],["Admin & overhead",num("adm")/100],["Meetings & coordination",num("mtg")/100],["Unplanned / firefighting",num("unp")/100],["Focus tax",focusPenalty()]].forEach(function(x){
+      var rem=r*(1-x[1]); bar(x[0]+" −", rem, "#9ec7b5", "−"+fmtH(gross*r*x[1])); r=rem;
+    });
+    bar("Engagement ×"+cf.c.toFixed(2), r*cf.c, "#1E7F55", fmtH(gross*r*cf.c));
+    bar("Cognitive load ×"+clfW.toFixed(2), r*cf.c*clfW, "#7a9c8d", fmtH(gross*r*cf.c*clfW));
+    bar("Sustainable delivery", eff, "#B8860B", fmtH(effHrs));
+
+    // plan + shoulder-tap
+    var loadPct=num("load"); var plannedHrs=gross*loadPct/100;
+    var injPct=num("stap"); var injHrs=plannedHrs*injPct/100*SWITCH;
+    var realHrs=plannedHrs+injHrs;
+    var pb=$("planbox");
+    var loadNote='Planned: <b>'+fmtH(plannedHrs)+'</b> ('+loadPct+'% of paper)'+(injPct>0?', plus <b>'+fmtH(injHrs)+'</b> of shoulder-taps ('+injPct+'% off-plan scope, amplified for the context-switching it forces) = real load <b>'+fmtH(realHrs)+'</b>':'')+'. Sustainable delivery: <b>'+fmtH(effHrs)+'</b>.';
+    if(realHrs>effHrs){
+      var over=realHrs-effHrs; var overShare=effHrs>0?(realHrs/effHrs):0;
+      pb.className="plan over";
+      pb.innerHTML='<div class="t">You\'ve committed more than the team can sustainably deliver — and it\'s not their fault.</div>'+loadNote+' That\'s an overcommitment of <b>'+fmtH(over)+'</b> — about <b>'+overShare.toFixed(1)+'×</b> the sustainable capacity. This is where the slippage, the fire drills, and the burnout quietly come from. The plan was impossible on day one; nobody was failing.';
+    }else{
+      var head=effHrs-realHrs;
+      pb.className="plan under";
+      pb.innerHTML='<div class="t">Your plan fits inside sustainable capacity — rare, and worth protecting.</div>'+loadNote+' You\'ve left <b>'+fmtH(head)+'</b> of headroom — exactly the slack that keeps flow healthy and absorbs the unplanned without a fire drill. Don\'t let anyone "optimize" it away.';
+    }
+
+    // sustainability zones
+    var sb=$("sustainbox");
+    var ratio=effHrs>0?(realHrs/effHrs):0;   // 1.0 = at the sustainable line
+    var zone=ratio<=1?"sustain":(ratio<=SURGE?"surge":"fantasy");
+    var scaleZ=Math.max(2.0, ratio+0.25);
+    function zp(v){return Math.min(100,v/scaleZ*100);}
+    var zCls,zTitle,zMsg;
+    if(zone==="sustain"){zCls="under";zTitle="Sustainable pace — holdable indefinitely";zMsg="Your real load sits at or below the line your team can hold week after week without borrowing against anyone's health. That is the whole goal — not a soft target, the only honest one. Protect it, and it will out-deliver any heroic plan over the length of a year.";}
+    else if(zone==="surge"){zCls="over";zTitle="Surge zone — you're running on heroics";zMsg="Your team can reach this, but only through individual and team heroics — and heroics are a loan, not capacity. It's survivable if it's brief, named as the exception, and repaid with real recovery. Sustained, this pace is measured in weeks before it starts costing you people: first the quiet exits of your best, who take their knowledge with them, then the ones who stay and get sick. A surge is a loan — schedule the repayment, or the repayment schedules itself. This is the expediter position, applied to human beings.";}
+    else{zCls="crit";zTitle="Beyond heroics — this is fiction";zMsg="Your real load is past what even heroics can reach. No pace closes this gap; the attempt just breaks people and still misses the date. This isn't a stretch goal — it's a plan that spends your team's health and buys nothing. The honest, humane move is to cut scope now, while it's still a number on a screen and not an illness or a resignation.";}
+    var zbar='<div class="band" style="margin:8px 0 30px"><div class="track" style="height:30px">'+
+      '<div class="seg" style="left:0;width:'+zp(1)+'%;background:#d7ebe0">sustainable</div>'+
+      '<div class="seg" style="left:'+zp(1)+'%;width:'+(zp(SURGE)-zp(1))+'%;background:#f4e3c8">surge · heroics</div>'+
+      '<div class="seg" style="left:'+zp(SURGE)+'%;width:'+(100-zp(SURGE))+'%;background:#f0d9d9">fiction</div>'+
+      '<div class="you" style="left:'+zp(ratio)+'%"></div>'+
+      '<div class="youlab" style="left:'+zp(ratio)+'%">your plan · '+Math.round(ratio*100)+'% of sustainable</div></div></div>';
+    sb.className="plan "+zCls;
+    sb.innerHTML='<div class="t">'+zTitle+'</div>'+zbar+zMsg;
+
+    // climb
+    var ci=$("climbitems");ci.innerHTML="";
+    var mtgNow=num("mtg")/100, mtgTgt=Math.min(mtgNow,0.08);
+    var unpNow=num("unp")/100, unpTgt=Math.min(unpNow,0.07);
+    var fpNow=focusPenalty(), fpTgt=Math.min(fpNow, Math.max(0,(1.5-1)*0.10));
+    var a=num("e1"),b=num("e2"),c=num("e3"),t=a+b+c||1;
+    var shift=Math.min(b,20*t/100);
+    var cfBetter=((a+shift)*CO_ENG+(b-shift)*CO_NOT+c*CO_DIS)/t;
+    function afterOHwith(mtg,unp,fp){var off=num("off")/100,adm=num("adm")/100;return (1-off)*(1-adm)*(1-mtg)*(1-unp)*(1-fp);}
+    function effWith(mtg,unp,fp,cc){return afterOHwith(mtg,unp,fp)*cc*clfW;}
+    var baseEff=eff;
+    var items=[];
+    var e_mtg=effWith(mtgTgt,unpNow,fpNow,cf.c)-baseEff;
+    if(e_mtg>0.001)items.push(["Reform the meeting (status → pre-read): "+Math.round(mtgNow*100)+"% → "+Math.round(mtgTgt*100)+"%", e_mtg]);
+    var e_unp=effWith(mtgTgt,unpTgt,fpNow,cf.c)-effWith(mtgTgt,unpNow,fpNow,cf.c);
+    if(e_unp>0.001)items.push(["Prevent fires instead of fighting them: "+Math.round(unpNow*100)+"% → "+Math.round(unpTgt*100)+"%", e_unp]);
+    var e_fp=effWith(mtgTgt,unpTgt,fpTgt,cf.c)-effWith(mtgTgt,unpTgt,fpNow,cf.c);
+    if(e_fp>0.001)items.push(["Protect focus — fewer concurrent priorities, and shut down the shoulder-taps", e_fp]);
+    var e_eng=effWith(mtgTgt,unpTgt,fpTgt,cfBetter)-effWith(mtgTgt,unpTgt,fpTgt,cf.c);
+    if(e_eng>0.001)items.push(["Move 20% of the team from 'going through motions' to engaged", e_eng]);
+    var totGain=0;
+    items.forEach(function(it){totGain+=it[1];
+      var d=document.createElement("div");d.className="item";
+      d.innerHTML='<span>'+it[0]+'</span><span class="g">+'+fmtH(gross*it[1])+'</span>';
+      ci.appendChild(d);
+    });
+    if(items.length===0){ci.innerHTML='<div class="item"><span>Your inputs are already near best-practice — the reclaimable gains here are small. That\'s a good place to be.</span></div>';}
+    $("climbTot").textContent="+"+fmtH(gross*totGain);
+    var afterPct=(baseEff+totGain)*100;
+    $("climbAfter").textContent=afterPct.toFixed(0)+"% of paper  ("+fmtH(gross*(baseEff+totGain))+")";
+
+    updateFlow();
+
+    var closeMsg;
+    if(zone==="fantasy"){
+      closeMsg="The kindest thing this tool can tell you today: the plan is fiction, and no amount of effort will make it true. Cutting scope now isn't failure — it's the one move that protects both the date and the people. Then work the climb above to lift the sustainable line honestly, so next time the plan and reality are the same number.";
+    }else if(zone==="surge"){
+      closeMsg="You're in heroics territory. It can work once, briefly, if you name it as a surge and repay it with real recovery — but if this is just 'how we run,' you're on the expediter's treadmill, and it ends in turnover and illness. Use the climb above to raise the sustainable line so you can stop borrowing, and shut the door on the shoulder-taps that quietly pushed you here.";
+    }else{
+      closeMsg="You're planning inside a sustainable pace, which puts you ahead of almost everyone. The climb above is still available if you want more throughput without burning anyone — and the flow number is where I'd look next, because healthy capacity trapped behind queues still feels slow.";
+    }
+    $("closing").textContent=closeMsg;
+
+    $("results").style.display="block";
+    $("results").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  function updateFlow(){
+    var f=num("fl"); $("flowPct").textContent=f; $("flV").textContent=f;
+    var msg;
+    if(f<10)msg="Work spends >90% of its life waiting. Your people aren't slow — your queues are.";
+    else if(f<25)msg="Typical. The bottleneck isn't effort, it's wait time between steps.";
+    else if(f<40)msg="Better than most. Worth protecting the slack that got you here.";
+    else msg="Strong flow. Rare air — the work is actually moving.";
+    $("flowMsg").textContent=msg;
+  }
+
+  ids.forEach(function(k){var el=$(k);if(el){el.addEventListener("input",function(){liveBits();if(k==="fl")updateFlow();});}});
+  $("run").addEventListener("click",run);
+  $("reset").addEventListener("click",function(){
+    try{localStorage.removeItem(KEY);}catch(e){}
+    var d={people:10,hours:40,weeks:13,off:12,adm:10,mtg:20,unp:15,cx:3,ci:1,cg:0,e1:30,e2:52,e3:18,load:90,stap:10,fl:15};
+    Object.keys(d).forEach(function(k){if($(k))$(k).value=d[k];});
+    liveBits();$("results").style.display="none";
+  });
+
+  load();liveBits();updateFlow();
+})();
+</script>
+</body>
+</html>
